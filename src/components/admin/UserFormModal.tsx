@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -147,6 +147,9 @@ export function UserFormModal({ open, onClose, user, onSuccess }: UserFormModalP
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{user ? 'Edit User' : 'Add New User'}</DialogTitle>
+          <DialogDescription>
+            {user ? 'Update user information and role settings' : 'Create a new user account with role and permissions'}
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -206,7 +209,7 @@ export function UserFormModal({ open, onClose, user, onSuccess }: UserFormModalP
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Role</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a role" />
@@ -229,7 +232,7 @@ export function UserFormModal({ open, onClose, user, onSuccess }: UserFormModalP
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Specialization</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select specialization" />
