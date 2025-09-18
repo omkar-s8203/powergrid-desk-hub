@@ -125,7 +125,7 @@ export type Database = {
         | "access"
         | "other"
       ticket_category: "hardware" | "software" | "network" | "access" | "other"
-      ticket_status: "open" | "in_progress" | "resolved"
+      ticket_status: "open" | "in_progress" | "resolved" | "closed"
       user_role: "admin" | "employee" | "it_helpdesk"
     }
     CompositeTypes: {
@@ -262,7 +262,7 @@ export const Constants = {
         "other",
       ],
       ticket_category: ["hardware", "software", "network", "access", "other"],
-      ticket_status: ["open", "in_progress", "resolved"],
+      ticket_status: ["open", "in_progress", "resolved", "closed"],
       user_role: ["admin", "employee", "it_helpdesk"],
     },
   },
