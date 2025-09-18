@@ -8,6 +8,7 @@ interface Profile {
   email: string;
   full_name: string;
   role: 'admin' | 'employee' | 'it_helpdesk';
+  specialization: 'hardware' | 'software' | 'network' | 'access' | 'other' | null;
 }
 
 interface AuthContextType {

@@ -13,6 +13,8 @@ import AdminTickets from "./pages/AdminTickets";
 import Employee from "./pages/Employee";
 import CreateTicket from "./pages/CreateTicket";
 import EmployeeTickets from "./pages/EmployeeTickets";
+import Helpdesk from "./pages/Helpdesk";
+import HelpdeskTickets from "./pages/HelpdeskTickets";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,8 @@ const App = () => (
             <Route path="/employee" element={<Employee />} />
             <Route path="/employee/create" element={<CreateTicket />} />
             <Route path="/employee/tickets" element={<EmployeeTickets />} />
+            <Route path="/helpdesk" element={<Helpdesk />} />
+            <Route path="/helpdesk/tickets" element={<HelpdeskTickets />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
