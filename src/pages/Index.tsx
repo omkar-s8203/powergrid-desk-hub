@@ -148,6 +148,18 @@ const Index = () => {
               </Card>
             ))}
           </div>
+          
+          {/* Setup Link */}
+          <div className="text-center mt-8">
+            <p className="text-sm text-muted-foreground mb-2">First time setup?</p>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/setup')}
+              className="text-primary hover:bg-primary/10"
+            >
+              Create Admin Account
+            </Button>
+          </div>
         </div>
       </div>
     </div>
