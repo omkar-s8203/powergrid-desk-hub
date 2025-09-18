@@ -93,12 +93,17 @@ export function UserFormModal({ open, onClose, user, onSuccess }: UserFormModalP
           updateData.specialization = null;
         }
 
+        console.log('Updating user with data:', updateData, 'for user ID:', user.id);
+
         const { error } = await supabase
           .from('profiles')
           .update(updateData)
           .eq('id', user.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase update error:', error);
+          throw error;
+        }
 
         toast({
           title: "Success",
@@ -108,6 +113,8 @@ export function UserFormModal({ open, onClose, user, onSuccess }: UserFormModalP
         // Create new user
         const redirectUrl = `${window.location.origin}/`;
         
+        console.log('Creating new user with data:', data);
+
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email: data.email,
           password: data.password!,
@@ -121,7 +128,10 @@ export function UserFormModal({ open, onClose, user, onSuccess }: UserFormModalP
           }
         });
 
-        if (authError) throw authError;
+        if (authError) {
+          console.error('Auth signup error:', authError);
+          throw authError;
+        }
 
         toast({
           title: "Success",
@@ -132,9 +142,19 @@ export function UserFormModal({ open, onClose, user, onSuccess }: UserFormModalP
       onSuccess();
     } catch (error: any) {
       console.error('Error saving user:', error);
+      let errorMessage = "Failed to save user";
+      
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.details) {
+        errorMessage = error.details;
+      } else if (error.hint) {
+        errorMessage = error.hint;
+      }
+
       toast({
         title: "Error",
-        description: error.message || "Failed to save user",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
