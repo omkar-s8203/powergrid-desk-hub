@@ -21,6 +21,9 @@ export type Database = {
           full_name: string
           id: string
           role: Database["public"]["Enums"]["user_role"]
+          specialization:
+            | Database["public"]["Enums"]["specialization_type"]
+            | null
           updated_at: string
           user_id: string
         }
@@ -30,6 +33,9 @@ export type Database = {
           full_name: string
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
+          specialization?:
+            | Database["public"]["Enums"]["specialization_type"]
+            | null
           updated_at?: string
           user_id: string
         }
@@ -39,6 +45,9 @@ export type Database = {
           full_name?: string
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
+          specialization?:
+            | Database["public"]["Enums"]["specialization_type"]
+            | null
           updated_at?: string
           user_id?: string
         }
@@ -103,9 +112,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
     }
     Enums: {
+      specialization_type:
+        | "hardware"
+        | "software"
+        | "network"
+        | "access"
+        | "other"
       ticket_category: "hardware" | "software" | "network" | "access" | "other"
       ticket_status: "open" | "in_progress" | "resolved"
       user_role: "admin" | "employee" | "it_helpdesk"
@@ -236,6 +254,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      specialization_type: [
+        "hardware",
+        "software",
+        "network",
+        "access",
+        "other",
+      ],
       ticket_category: ["hardware", "software", "network", "access", "other"],
       ticket_status: ["open", "in_progress", "resolved"],
       user_role: ["admin", "employee", "it_helpdesk"],
