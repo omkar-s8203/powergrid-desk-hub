@@ -44,11 +44,26 @@ export function PasswordChangeModal({ open, onClose, userId, userName }: Passwor
 
     setLoading(true);
     try {
-      const { error } = await supabase.auth.admin.updateUserById(userId, {
-        password: newPassword,
+      // Get the current session to pass auth token
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        throw new Error('No active session');
+      }
+
+      // Call the edge function to update password
+      const { data, error } = await supabase.functions.invoke('admin-update-password', {
+        body: { 
+          userId: userId,
+          newPassword: newPassword 
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        }
       });
 
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
       toast({
         title: "Success",
@@ -58,11 +73,11 @@ export function PasswordChangeModal({ open, onClose, userId, userName }: Passwor
       setNewPassword('');
       setConfirmPassword('');
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating password:', error);
       toast({
         title: "Error",
-        description: "Failed to update password. You may need admin privileges.",
+        description: error.message || "Failed to update password",
         variant: "destructive",
       });
     } finally {
