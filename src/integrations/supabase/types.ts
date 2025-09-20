@@ -158,6 +158,23 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      get_ticket_messages: {
+        Args: { ticket_id_param: string }
+        Returns: {
+          created_at: string
+          id: string
+          message: string
+          sender_full_name: string
+          sender_id: string
+          sender_role: Database["public"]["Enums"]["user_role"]
+          ticket_id: string
+          updated_at: string
+        }[]
+      }
+      insert_ticket_message: {
+        Args: { p_message: string; p_sender_id: string; p_ticket_id: string }
+        Returns: string
+      }
     }
     Enums: {
       specialization_type:
