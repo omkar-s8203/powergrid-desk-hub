@@ -10,7 +10,8 @@ import { useAuth } from '@/components/auth/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
-interface Message {
+// Type definitions for ticket_messages (since not in generated types yet)
+interface TicketMessage {
   id: string;
   ticket_id: string;
   sender_id: string;
@@ -21,6 +22,9 @@ interface Message {
     role: string;
   };
 }
+
+// Use the TicketMessage interface defined above
+type Message = TicketMessage;
 
 interface TicketChatProps {
   ticketId: string;
@@ -49,24 +53,35 @@ export function TicketChat({ ticketId, isEmployee = false }: TicketChatProps) {
 
   const fetchMessages = async () => {
     try {
-      const { data, error } = await (supabase as any)
-        .from('ticket_messages')
-        .select(`
-          *,
-          sender:profiles!ticket_messages_sender_id_fkey(full_name, role)
-        `)
-        .eq('ticket_id', ticketId)
-        .order('created_at', { ascending: true });
+      const { data, error } = await supabase
+        .rpc('get_ticket_messages', { ticket_id_param: ticketId });
 
       if (error) throw error;
-      setMessages(data || []);
+      setMessages((data as TicketMessage[]) || []);
     } catch (error) {
       console.error('Error fetching messages:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load chat messages",
-        variant: "destructive",
-      });
+      // Fallback to direct query with type assertion
+      try {
+        const client = supabase as any;
+        const { data: fallbackData, error: fallbackError } = await client
+          .from('ticket_messages')
+          .select(`
+            *,
+            sender:profiles!ticket_messages_sender_id_fkey(full_name, role)
+          `)
+          .eq('ticket_id', ticketId)
+          .order('created_at', { ascending: true });
+
+        if (fallbackError) throw fallbackError;
+        setMessages((fallbackData as TicketMessage[]) || []);
+      } catch (fallbackErr) {
+        console.error('Fallback error:', fallbackErr);
+        toast({
+          title: "Error",
+          description: "Failed to load chat messages",
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -84,19 +99,25 @@ export function TicketChat({ ticketId, isEmployee = false }: TicketChatProps) {
           filter: `ticket_id=eq.${ticketId}`
         },
         (payload) => {
-          // Fetch the complete message with sender details
-          (supabase as any)
-            .from('ticket_messages')
-            .select(`
-              *,
-              sender:profiles!ticket_messages_sender_id_fkey(full_name, role)
-            `)
-            .eq('id', payload.new.id)
+          // Add the new message to the state
+          const newMessage = payload.new as TicketMessage;
+          // Fetch sender details
+          supabase
+            .from('profiles')
+            .select('full_name, role')
+            .eq('id', newMessage.sender_id)
             .single()
-            .then(({ data }: { data: any }) => {
-              if (data) {
-                setMessages(prev => [...prev, data as Message]);
-              }
+            .then(({ data: senderData }) => {
+              const messageWithSender: TicketMessage = {
+                ...newMessage,
+                sender: senderData || { full_name: 'Unknown', role: 'user' }
+              };
+              setMessages(prev => [...prev, messageWithSender]);
+            })
+            .catch(err => {
+              console.error('Error fetching sender details:', err);
+              // Add message without sender details as fallback
+              setMessages(prev => [...prev, newMessage]);
             });
         }
       )
@@ -112,15 +133,27 @@ export function TicketChat({ ticketId, isEmployee = false }: TicketChatProps) {
 
     setSending(true);
     try {
-      const { error } = await (supabase as any)
-        .from('ticket_messages')
-        .insert({
-          ticket_id: ticketId,
-          sender_id: profile.id,
-          message: newMessage.trim()
-        });
+      // Use RPC function to insert message
+      const { error } = await supabase.rpc('insert_ticket_message', {
+        p_ticket_id: ticketId,
+        p_sender_id: profile.id,
+        p_message: newMessage.trim()
+      });
 
-      if (error) throw error;
+      if (error) {
+        // Fallback to direct insert with type assertion
+        const client = supabase as any;
+        const { error: insertError } = await client
+          .from('ticket_messages')
+          .insert({
+            ticket_id: ticketId,
+            sender_id: profile.id,
+            message: newMessage.trim()
+          });
+
+        if (insertError) throw insertError;
+      }
+
       setNewMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
