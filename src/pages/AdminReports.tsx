@@ -1,5 +1,6 @@
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { TicketAnalytics } from '@/components/analytics/TicketAnalytics';
+import { AdminTicketManagement } from '@/components/admin/AdminTicketManagement';
 
 const AdminReports = () => {
   return (
@@ -12,6 +13,7 @@ const AdminReports = () => {
           </p>
         </div>
         <TicketAnalytics />
+        <AdminTicketManagement />
       </div>
     </AdminLayout>
   );

@@ -49,7 +49,7 @@ export function TicketChat({ ticketId, isEmployee = false }: TicketChatProps) {
 
   const fetchMessages = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('ticket_messages')
         .select(`
           *,
@@ -85,7 +85,7 @@ export function TicketChat({ ticketId, isEmployee = false }: TicketChatProps) {
         },
         (payload) => {
           // Fetch the complete message with sender details
-          supabase
+          (supabase as any)
             .from('ticket_messages')
             .select(`
               *,
@@ -93,9 +93,9 @@ export function TicketChat({ ticketId, isEmployee = false }: TicketChatProps) {
             `)
             .eq('id', payload.new.id)
             .single()
-            .then(({ data }) => {
+            .then(({ data }: { data: any }) => {
               if (data) {
-                setMessages(prev => [...prev, data]);
+                setMessages(prev => [...prev, data as Message]);
               }
             });
         }
@@ -112,7 +112,7 @@ export function TicketChat({ ticketId, isEmployee = false }: TicketChatProps) {
 
     setSending(true);
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('ticket_messages')
         .insert({
           ticket_id: ticketId,

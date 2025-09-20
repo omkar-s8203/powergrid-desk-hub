@@ -278,8 +278,69 @@ export function TicketAnalytics() {
         </Card>
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Performance Analytics */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Helpdesk Performance */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Helpdesk Performance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {data.helpdeskPerformance.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-4">No helpdesk performance data available</p>
+                ) : (
+                  data.helpdeskPerformance.map((helpdesk, index) => (
+                    <div key={index} className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                      <div>
+                        <p className="font-medium">{helpdesk.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {helpdesk.resolved}/{helpdesk.assigned} resolved
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">{helpdesk.avg_resolution}h avg</p>
+                        <p className="text-xs text-muted-foreground">
+                          {((helpdesk.resolved / helpdesk.assigned) * 100).toFixed(0)}% rate
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Employee Issues */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Top Issue Reporters</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {data.employeeIssues.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-4">No employee data available</p>
+                ) : (
+                  data.employeeIssues.slice(0, 5).map((employee, index) => (
+                    <div key={index} className="flex justify-between items-center p-2 border-b last:border-0">
+                      <div>
+                        <p className="font-medium text-sm">{employee.name}</p>
+                        <p className="text-xs text-muted-foreground">{employee.email}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">{employee.total_tickets} total</p>
+                        <p className="text-xs text-destructive">{employee.open_tickets} open</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tickets by Category */}
         <Card>
           <CardHeader>

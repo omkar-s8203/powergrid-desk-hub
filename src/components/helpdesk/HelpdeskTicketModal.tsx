@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { CheckCircle, Clock, User, Calendar, Tag, FileText, Play, Save, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { TicketChat } from '@/components/chat/TicketChat';
 
 interface Ticket {
   id: string;
@@ -273,6 +274,11 @@ export function HelpdeskTicketModal({
                   </Button>
                 )}
               </div>
+            </div>
+
+            {/* Chat Section */}
+            <div className="mt-6">
+              <TicketChat ticketId={ticket.id} isEmployee={false} />
             </div>
           </div>
         </ScrollArea>

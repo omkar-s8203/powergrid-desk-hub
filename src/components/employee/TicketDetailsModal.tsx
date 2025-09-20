@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { CheckCircle, Clock, User, Calendar, Tag, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { TicketChat } from '@/components/chat/TicketChat';
 
 interface Ticket {
   id: string;
@@ -195,6 +196,11 @@ export function TicketDetailsModal({
                 </div>
               </>
             )}
+
+            {/* Chat Section */}
+            <div className="mt-6">
+              <TicketChat ticketId={ticket.id} isEmployee={true} />
+            </div>
           </div>
         </ScrollArea>
       </DialogContent>
