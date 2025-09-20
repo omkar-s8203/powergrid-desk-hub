@@ -49,7 +49,8 @@ export function ChatBot() {
       const { data, error } = await supabase.functions.invoke('chatbot', {
         body: { 
           message: input,
-          role: profile?.role || 'employee'
+          role: profile?.role || 'employee',
+          userId: profile?.user_id
         }
       });
 
