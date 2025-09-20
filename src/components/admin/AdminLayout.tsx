@@ -6,7 +6,7 @@ import {
   LayoutDashboard, 
   Users, 
   Ticket, 
-  Settings, 
+  BarChart3, 
   LogOut,
   Menu,
   X,
@@ -28,7 +28,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
-    { name: 'Settings', href: '/admin/settings', icon: Settings },
+    { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
   ];
 
   const handleSignOut = async () => {

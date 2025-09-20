@@ -4,6 +4,7 @@ import {
   LayoutDashboard, 
   Plus, 
   FileText, 
+  BarChart3,
   LogOut, 
   Menu, 
   X 
@@ -29,6 +30,7 @@ export function EmployeeLayout({ children }: EmployeeLayoutProps) {
     { name: 'Dashboard', href: '/employee', icon: LayoutDashboard },
     { name: 'Create Ticket', href: '/employee/create', icon: Plus },
     { name: 'My Tickets', href: '/employee/tickets', icon: FileText },
+    { name: 'My Reports', href: '/employee/reports', icon: BarChart3 },
   ];
 
   return (

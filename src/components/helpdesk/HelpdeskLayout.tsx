@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
-  Headphones, 
+  Headphones,
+  BarChart3, 
   LogOut, 
   Menu, 
   X 
@@ -28,6 +29,7 @@ export function HelpdeskLayout({ children }: HelpdeskLayoutProps) {
   const navigationItems = [
     { name: 'Dashboard', href: '/helpdesk', icon: LayoutDashboard },
     { name: 'Assigned Tickets', href: '/helpdesk/tickets', icon: Headphones },
+    { name: 'Performance', href: '/helpdesk/reports', icon: BarChart3 },
   ];
 
   return (
