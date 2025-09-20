@@ -29,6 +29,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
     { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
+    { name: 'AI Demo', href: '/admin/demo', icon: BarChart3 },
   ];
 
   const handleSignOut = async () => {

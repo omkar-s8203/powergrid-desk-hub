@@ -11,7 +11,7 @@ import Setup from "./pages/Setup";
 import Admin from "./pages/Admin";
 import AdminUsers from "./pages/AdminUsers";
 import AdminTickets from "./pages/AdminTickets";
-import AdminReports from "./pages/AdminReports";
+import AdminDemo from "./pages/AdminDemo";
 import Employee from "./pages/Employee";
 import CreateTicket from "./pages/CreateTicket";
 import EmployeeTickets from "./pages/EmployeeTickets";
@@ -37,7 +37,7 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/tickets" element={<AdminTickets />} />
-            <Route path="/admin/reports" element={<AdminReports />} />
+            <Route path="/admin/demo" element={<AdminDemo />} />
             <Route path="/employee" element={<Employee />} />
             <Route path="/employee/create" element={<CreateTicket />} />
             <Route path="/employee/tickets" element={<EmployeeTickets />} />

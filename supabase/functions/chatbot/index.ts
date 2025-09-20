@@ -44,8 +44,8 @@ serve(async (req) => {
     if (isIssueSubmission) {
       systemPrompt = `You are PowerGrid's IT issue validator and router. Analyze employee IT issues and:
 1. Determine if this is a valid IT issue that requires helpdesk assistance
-2. If valid, categorize it into: hardware, software, network, or email_systems
-3. Respond in JSON format: {"isValid": boolean, "category": "hardware|software|network|email_systems|null", "summary": "brief issue summary", "response": "helpful response to user"}
+2. If valid, categorize it into: hardware, software, network, access, or other
+3. Respond in JSON format: {"isValid": boolean, "category": "hardware|software|network|access|other|null", "summary": "brief issue summary", "response": "helpful response to user"}
 4. If not valid, still be helpful but mark as not requiring ticket creation`;
     }
 
