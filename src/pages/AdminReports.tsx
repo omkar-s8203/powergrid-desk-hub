@@ -1,6 +1,6 @@
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { TicketAnalytics } from '@/components/analytics/TicketAnalytics';
-import { AdminTicketManagement } from '@/components/admin/AdminTicketManagement';
+import { PendingTicketsOverview } from '@/components/admin/PendingTicketsOverview';
 
 const AdminReports = () => {
   return (
@@ -12,8 +12,8 @@ const AdminReports = () => {
             Comprehensive insights into ticket management and system performance.
           </p>
         </div>
+        <PendingTicketsOverview />
         <TicketAnalytics />
-        <AdminTicketManagement />
       </div>
     </AdminLayout>
   );

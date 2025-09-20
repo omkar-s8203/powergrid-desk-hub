@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Key } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { UserFormModal, type UserModalUser } from './UserFormModal';
+import { PasswordChangeModal } from './PasswordChangeModal';
 
 interface User {
   id: string;
@@ -25,6 +26,8 @@ export function UserManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -168,14 +171,27 @@ export function UserManagement() {
                               setEditingUser(user);
                               setModalOpen(true);
                             }}
+                            title="Edit user"
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setPasswordModalOpen(true);
+                            }}
+                            title="Change password"
+                          >
+                            <Key className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => handleDeleteUser(user.id)}
                             className="text-destructive hover:text-destructive"
+                            title="Delete user"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -207,6 +223,16 @@ export function UserManagement() {
           setModalOpen(false);
           setEditingUser(null);
         }}
+      />
+
+      <PasswordChangeModal
+        open={passwordModalOpen}
+        onClose={() => {
+          setPasswordModalOpen(false);
+          setSelectedUser(null);
+        }}
+        userId={selectedUser?.user_id || ''}
+        userName={selectedUser?.full_name || ''}
       />
     </div>
   );
