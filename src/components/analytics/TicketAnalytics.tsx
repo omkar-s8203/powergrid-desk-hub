@@ -10,6 +10,8 @@ interface AnalyticsData {
   ticketsByCategory: Array<{ category: string; count: number }>;
   ticketsByStatus: Array<{ status: string; count: number; color: string }>;
   ticketTrends: Array<{ date: string; created: number; resolved: number }>;
+  helpdeskPerformance: Array<{ name: string; assigned: number; resolved: number; avg_resolution: number }>;
+  employeeIssues: Array<{ name: string; email: string; total_tickets: number; open_tickets: number }>;
   avgResolutionTime: number;
   totalTickets: number;
   openTickets: number;
@@ -31,10 +33,14 @@ export function TicketAnalytics() {
     try {
       setLoading(true);
 
-      // Fetch tickets data
+      // Fetch tickets data with related profiles
       const { data: tickets, error } = await supabase
         .from('tickets')
-        .select('*');
+        .select(`
+          *,
+          employee:profiles!tickets_employee_id_fkey(id, full_name, email),
+          assigned_user:profiles!tickets_assigned_to_fkey(id, full_name, specialization)
+        `);
 
       if (error) throw error;
 
@@ -42,6 +48,8 @@ export function TicketAnalytics() {
       const ticketsByCategory = processTicketsByCategory(tickets || []);
       const ticketsByStatus = processTicketsByStatus(tickets || []);
       const ticketTrends = processTicketTrends(tickets || []);
+      const helpdeskPerformance = processHelpdeskPerformance(tickets || []);
+      const employeeIssues = processEmployeeIssues(tickets || []);
       const avgResolutionTime = calculateAvgResolutionTime(tickets || []);
       
       const totalTickets = tickets?.length || 0;
@@ -55,6 +63,8 @@ export function TicketAnalytics() {
         ticketsByCategory,
         ticketsByStatus,
         ticketTrends,
+        helpdeskPerformance,
+        employeeIssues,
         avgResolutionTime,
         totalTickets,
         openTickets,
@@ -140,6 +150,68 @@ export function TicketAnalytics() {
     }, 0);
 
     return Math.round(totalTime / resolvedTickets.length / (1000 * 60 * 60)); // Convert to hours
+  };
+
+  const processHelpdeskPerformance = (tickets: any[]) => {
+    const helpdeskMap: Record<string, { assigned: number; resolved: number; resolutionTimes: number[] }> = {};
+    
+    tickets.forEach(ticket => {
+      if (ticket.assigned_user?.full_name) {
+        const name = ticket.assigned_user.full_name;
+        if (!helpdeskMap[name]) {
+          helpdeskMap[name] = { assigned: 0, resolved: 0, resolutionTimes: [] };
+        }
+        
+        helpdeskMap[name].assigned++;
+        
+        if (ticket.status === 'resolved') {
+          helpdeskMap[name].resolved++;
+          const resolutionTime = new Date(ticket.updated_at).getTime() - new Date(ticket.created_at).getTime();
+          helpdeskMap[name].resolutionTimes.push(resolutionTime);
+        }
+      }
+    });
+
+    return Object.entries(helpdeskMap).map(([name, data]) => ({
+      name,
+      assigned: data.assigned,
+      resolved: data.resolved,
+      avg_resolution: data.resolutionTimes.length > 0 
+        ? Math.round(data.resolutionTimes.reduce((sum, time) => sum + time, 0) / data.resolutionTimes.length / (1000 * 60 * 60))
+        : 0
+    }));
+  };
+
+  const processEmployeeIssues = (tickets: any[]) => {
+    const employeeMap: Record<string, { name: string; email: string; total: number; open: number }> = {};
+    
+    tickets.forEach(ticket => {
+      if (ticket.employee?.full_name) {
+        const key = ticket.employee.id;
+        if (!employeeMap[key]) {
+          employeeMap[key] = {
+            name: ticket.employee.full_name,
+            email: ticket.employee.email,
+            total: 0,
+            open: 0
+          };
+        }
+        
+        employeeMap[key].total++;
+        if (ticket.status === 'open' || ticket.status === 'in_progress') {
+          employeeMap[key].open++;
+        }
+      }
+    });
+
+    return Object.values(employeeMap)
+      .map(emp => ({
+        name: emp.name,
+        email: emp.email,
+        total_tickets: emp.total,
+        open_tickets: emp.open
+      }))
+      .sort((a, b) => b.total_tickets - a.total_tickets);
   };
 
   if (loading) {
