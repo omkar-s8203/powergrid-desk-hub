@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 import powerGrideLogo from '@/assets/powerGrideLogo.png';
 import { 
   LayoutDashboard, 
@@ -35,7 +36,7 @@ export function HelpdeskLayout({ children }: HelpdeskLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Mobile sidebar backdrop */}
+      {/* Mobile sidebar backdrop - no theme change needed */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -45,7 +46,7 @@ export function HelpdeskLayout({ children }: HelpdeskLayoutProps) {
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex items-center justify-between h-16 px-6 border-b">
@@ -73,11 +74,11 @@ export function HelpdeskLayout({ children }: HelpdeskLayoutProps) {
                 key={item.name}
                 to={item.href}
                 className={({ isActive }) =>
-                  `flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                  cn("flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
                     isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  }`
+                      ? 'bg-primary text-primary-foreground' // Active link style is fine
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground' // Standard link style
+                  )
                 }
                 onClick={() => setSidebarOpen(false)}
               >
@@ -88,7 +89,7 @@ export function HelpdeskLayout({ children }: HelpdeskLayoutProps) {
           </div>
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
           <div className="mb-4">
             <p className="text-sm font-medium text-foreground">{profile?.full_name}</p>
             <p className="text-xs text-muted-foreground">{profile?.email}</p>
@@ -117,7 +118,7 @@ export function HelpdeskLayout({ children }: HelpdeskLayoutProps) {
 
       {/* Main content */}
       <div className="flex-1 lg:ml-0">
-        <header className="bg-card border-b px-6 py-4 lg:hidden">
+        <header className="bg-card border-b border-border px-6 py-4 lg:hidden">
           <Button
             variant="ghost"
             size="sm"

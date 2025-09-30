@@ -103,7 +103,7 @@ export function PendingTicketsOverview() {
 
   if (loading) {
     return (
-      <Card>
+      <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle>Pending Tickets Overview</CardTitle>
         </CardHeader>
@@ -119,7 +119,7 @@ export function PendingTicketsOverview() {
   }
 
   return (
-    <Card>
+    <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <AlertTriangle className="h-5 w-5 text-orange-500" />
@@ -147,7 +147,7 @@ export function PendingTicketsOverview() {
               return (
                 <div
                   key={ticket.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                  className="flex items-center justify-between p-4 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
                 >
                   <div className="flex items-center space-x-4 flex-1">
                     <div className="flex items-center space-x-2">

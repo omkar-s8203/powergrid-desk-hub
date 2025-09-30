@@ -122,99 +122,198 @@ const Index = () => {
             <main>
                  {/* Hero Section */}
                 <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-                    <div className="absolute inset-0 z-0">
-                        <img src={heroPowergrid} alt="PowerGrid IT Infrastructure" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/80 to-green-800/90" />
-                    </div>
-                    <div className="absolute inset-0 z-10">
-                        <div className="absolute top-20 left-20 w-32 h-32 bg-orange-500/20 rounded-full blur-xl animate-pulse" />
-                        <div className="absolute bottom-32 right-32 w-24 h-24 bg-green-500/20 rounded-full blur-xl animate-pulse delay-1000" />
-                        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-white/10 rounded-full blur-lg animate-bounce delay-500" />
-                    </div>
-                    <div className="relative z-20 container mx-auto px-4 lg:px-8 text-center">
-                        <div className="max-w-4xl mx-auto">
-                            <div className="flex flex-wrap justify-center gap-2 mb-6">
-                                <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">🇮🇳 Atmanirbhar Bharat</Badge>
-                                <Badge className="bg-white/20 text-white border-white/30">AI-Powered</Badge>
-                                <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Made in India</Badge>
-                            </div>
-                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-                                <span className="block">Intelligent IT</span>
-                                <span className="block bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">Sahayata Desk</span>
-                            </h1>
-                            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-                                Revolutionary AI-powered IT helpdesk for POWERGRID. A <span className="font-semibold">Atmanirbhar</span> digital solution supporting the <span className="font-semibold">Make in India</span> mission.
-                            </p>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-3xl mx-auto">
-                                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"><Bot className="h-8 w-8 text-orange-400 mx-auto mb-2" /><span className="text-white text-sm font-medium">AI Classification</span></div>
-                                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"><Zap className="h-8 w-8 text-yellow-300 mx-auto mb-2" /><span className="text-white text-sm font-medium">Instant Response</span></div>
-                                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"><Users className="h-8 w-8 text-green-300 mx-auto mb-2" /><span className="text-white text-sm font-medium">Multi-Role Access</span></div>
-                                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20"><Shield className="h-8 w-8 text-blue-300 mx-auto mb-2" /><span className="text-white text-sm font-medium">Secure & Reliable</span></div>
-                            </div>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Button className="text-lg px-8 bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:opacity-90" size="lg" onClick={() => navigate('/auth?tab=signup')}>Start Your Journey</Button>
-                                <Button variant="outline" size="lg" className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>Learn More</Button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
-                </section>
+                     {/* Background with overlay */}
+                     <div className="absolute inset-0 z-0" id="particles-container">
+                         <img 
+                           src={heroPowergrid} 
+                           alt="PowerGrid IT Infrastructure" 
+                           className="w-full h-full object-cover"
+                         />
+                         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/80 via-black/50 to-green-600/80" />
+                     </div>
+                     
+                     {/* Particle Animation */}
+                     <div className="absolute inset-0 z-0 overflow-hidden">
+                         {Array.from({ length: 100 }).map((_, i) => (
+                             <div
+                                 key={i}
+                                 className="absolute bg-white/10 rounded-full"
+                                 style={{
+                                     width: `${Math.random() * 3 + 1}px`,
+                                     height: `${Math.random() * 3 + 1}px`,
+                                     left: `${Math.random() * 100}%`,
+                                     bottom: '-5%',
+                                     animation: `float-up ${5 + Math.random() * 15}s linear ${Math.random() * 10}s infinite`,
+                                 }}
+                             />
+                         ))}
+                     </div>
+                     
+                     {/* Animated background elements */}
+                     <div className="absolute inset-0 z-10">
+                         <div className="absolute top-20 left-20 w-32 h-32 bg-orange-500/20 rounded-full blur-xl animate-pulse" />
+                         <div className="absolute bottom-32 right-32 w-24 h-24 bg-green-500/20 rounded-full blur-xl animate-pulse delay-1000" />
+                         <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-white/10 rounded-full blur-lg animate-bounce delay-500" />
+                     </div>
+ 
+                     <div className="relative z-20 container mx-auto px-4 lg:px-8 text-center">
+                         <div className="max-w-4xl mx-auto">
+                             {/* Badges */}
+                             <div className="flex flex-wrap justify-center gap-2 mb-6">
+                                 <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                                     🇮🇳 Atmanirbhar Bharat
+                                 </Badge>
+                                 <Badge className="bg-white/20 text-white border-white/30">
+                                     AI-Powered
+                                 </Badge>
+                                 <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                                     Made in India
+                                 </Badge>
+                             </div>
+ 
+                             {/* Main heading */}
+                             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+                                 <span className="block">Intelligent IT</span>
+                                 <span className="block bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
+                                     Sahayata Desk
+                                 </span>
+                             </h1>
+ 
+                             {/* Subtitle */}
+                             <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+                                 Revolutionary AI-powered IT helpdesk prototype for POWERGRID - India's largest transmission utility. 
+                                 <span className="font-semibold"> Atmanirbhar</span> digital solution supporting 
+                                 <span className="font-semibold"> Make in India</span> mission with cutting-edge indigenous technology.
+                             </p>
+ 
+                             {/* Features grid */}
+                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-3xl mx-auto">
+                                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                                     <Bot className="h-8 w-8 text-orange-400 mx-auto mb-2" />
+                                     <span className="text-white text-sm font-medium">AI Classification</span>
+                                 </div>
+                                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                                     <Zap className="h-8 w-8 text-yellow-300 mx-auto mb-2" />
+                                     <span className="text-white text-sm font-medium">Instant Response</span>
+                                 </div>
+                                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                                     <Users className="h-8 w-8 text-green-300 mx-auto mb-2" />
+                                     <span className="text-white text-sm font-medium">Multi-Role Access</span>
+                                 </div>
+                                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                                     <Shield className="h-8 w-8 text-blue-300 mx-auto mb-2" />
+                                     <span className="text-white text-sm font-medium">Secure & Reliable</span>
+                                 </div>
+                             </div>
+ 
+                             {/* CTA Buttons */}
+                             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                                 <Button className="text-lg px-8 bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:opacity-90" size="lg" onClick={() => navigate('/auth?tab=signup')}>
+                                     Start Your Journey
+                                 </Button>
+                                 <Button variant="outline" size="lg" className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
+                                     Learn More
+                                 </Button>
+                             </div>
+ 
+                             {/* Stats */}
+                             <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto text-center">
+                                 <div>
+                                     <div className="text-2xl font-bold text-orange-400">100%</div>
+                                     <div className="text-white/80 text-sm">Made in India</div>
+                                 </div>
+                                 <div>
+                                     <div className="text-2xl font-bold text-yellow-300">AI-Powered</div>
+                                     <div className="text-white/80 text-sm">Smart Routing</div>
+                                 </div>
+                                 <div>
+                                     <div className="text-2xl font-bold text-green-300">24/7</div>
+                                     <div className="text-white/80 text-sm">Support Ready</div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     {/* Bottom gradient fade */}
+                     <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
+                 </section>
+
+                 {/* Keyframes for particle animation */}
+                 <style>{`
+                     @keyframes float-up {
+                         0% {
+                             transform: translateY(0);
+                             opacity: 0;
+                         }
+                         50% { opacity: 1; }
+                         100% {
+                             transform: translateY(-105vh);
+                             opacity: 0;
+                         }
+                     }
+                 `}</style>
 
                 {/* About Section */}
-                <section id="about" className="py-20 bg-gradient-to-b from-muted/30 to-background">
+                <section id="about" className="py-20 bg-background">
                     <div className="container mx-auto px-4 lg:px-8">
                         <div className="text-center mb-16">
                             <Badge className="mb-4 bg-gradient-to-r from-orange-500 to-green-600 text-white border-0">🇮🇳 Power Grid Corporation of India</Badge>
                             <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">About <span className="text-primary">POWERGRID</span></h2>
                             <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">A 'Maharatna' Company under Ministry of Power, POWERGRID is the largest transmission utility in India and a leading power Grid Company in the world.</p>
                         </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-                            <div className="text-center p-6 bg-gradient-to-br from-background to-muted/50 rounded-lg border"><div className="text-3xl font-bold text-primary mb-2">1,72,000+</div><div className="text-sm text-muted-foreground">Circuit Kilometers</div></div>
-                            <div className="text-center p-6 bg-gradient-to-br from-background to-muted/50 rounded-lg border"><div className="text-3xl font-bold text-orange-500 mb-2">280+</div><div className="text-sm text-muted-foreground">Sub-stations</div></div>
-                            <div className="text-center p-6 bg-gradient-to-br from-background to-muted/50 rounded-lg border"><div className="text-3xl font-bold text-green-600 mb-2">15,000+</div><div className="text-sm text-muted-foreground">Employees</div></div>
-                            <div className="text-center p-6 bg-gradient-to-br from-background to-muted/50 rounded-lg border"><div className="text-3xl font-bold text-primary mb-2">50%</div><div className="text-sm text-muted-foreground">India's Power Transmission</div></div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 text-foreground">
+                            <div className="text-center p-6 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10"><div className="text-3xl font-bold text-primary mb-2">1,72,000+</div><div className="text-sm text-muted-foreground">Circuit Kilometers</div></div>
+                            <div className="text-center p-6 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10"><div className="text-3xl font-bold text-orange-500 mb-2">280+</div><div className="text-sm text-muted-foreground">Sub-stations</div></div>
+                            <div className="text-center p-6 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10"><div className="text-3xl font-bold text-green-600 mb-2">15,000+</div><div className="text-sm text-muted-foreground">Employees</div></div>
+                            <div className="text-center p-6 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10"><div className="text-3xl font-bold text-primary mb-2">50%</div><div className="text-sm text-muted-foreground">India's Power Transmission</div></div>
                         </div>
                     </div>
                 </section>
 
                 {/* Atmanirbhar Vision Section */}
-                <section id="vision" className="py-20 bg-background">
+                <section id="vision" className="py-20 bg-gradient-to-br from-orange-500/10 via-background to-green-600/10">
                     <div className="container mx-auto px-4 lg:px-8">
                         <div className="grid lg:grid-cols-2 gap-12 items-center">
                             <div className="text-center lg:text-left">
                                 <Badge className="mb-4 bg-gradient-to-r from-orange-500 via-white to-green-600 text-transparent bg-clip-text border-0 font-bold text-lg">The Vision</Badge>
                                 <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">Driving an <span className="text-primary">Atmanirbhar Bharat</span></h2>
-                                <p className="text-lg text-muted-foreground mb-4 leading-relaxed">
+                                <p className="text-lg text-foreground/80 mb-4 leading-relaxed">
                                     Our IT Sahayata Desk is a testament to India's technological prowess, born from the vision of 'Make in India' and 'Digital India'. By developing this critical infrastructure in-house, we are not just solving problems—we are building a self-reliant, digitally empowered nation.
                                 </p>
-                                <p className="text-lg text-muted-foreground leading-relaxed">
+                                <p className="text-lg text-foreground/80 leading-relaxed">
                                     This platform embodies the Swadeshi spirit, encouraging the use of Indian products and ensuring our data remains sovereign. It is a proud step towards making POWERGRID, and India, a global leader in technology and innovation.
                                 </p>
                             </div>
-                            <div className="relative group">
-                                <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-green-600 rounded-lg blur-lg opacity-50 group-hover:opacity-75 transition duration-300"></div>
-                                <Card className="relative">
-                                    <img src={modiImage} alt="Vision of Make in India - Narendra Modi" className="rounded-lg w-full h-full object-cover" />
-                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 rounded-b-lg">
-                                        <p className="text-white font-semibold text-lg">"The more we make in India, the more we will create jobs and the more our purchasing power will increase." - Narendra Modi</p>
-                                    </div>
+                            <div 
+                                className="group relative max-w-md mx-auto"
+                            >
+                                <Card className="bg-white/10 backdrop-blur-sm border border-white/20 overflow-hidden p-1 shadow-lg group-hover:shadow-2xl transition-all duration-300 group-hover:-translate-y-2">
+                                    <img 
+                                        src={modiImage} 
+                                        alt="Vision of Make in India - Narendra Modi" 
+                                        className="rounded-md w-full h-auto object-cover" 
+                                    />
                                 </Card>
+                                <blockquote className="mt-6 border-l-4 border-orange-400 pl-4 italic text-foreground/80">
+                                    "The more we make in India, the more we will create jobs and the more our purchasing power will increase."
+                                    <cite className="block not-italic font-semibold text-foreground mt-2">- Narendra Modi</cite>
+                                </blockquote>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 {/* Features Section */}
-                <section id="features" className="py-20 bg-gradient-to-b from-background to-muted/30">
+                <section id="features" className="py-20 bg-gradient-to-b from-background to-black/20">
                     <div className="container mx-auto px-4 lg:px-8">
                         <div className="text-center mb-16">
                             <Badge className="mb-4 bg-orange-500/10 text-orange-500 border-orange-500/20">Atmanirbhar Features</Badge>
                             <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">Built for <span className="text-primary">Modern India</span></h2>
                             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Experience indigenous technology designed for Indian organizations, combining global standards with local requirements.</p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {features.map((feature, index) => (
-                                <Card key={index} className="group hover:shadow-lg transition-all duration-300 border hover:border-primary/20 bg-gradient-to-br from-background to-background/50">
+                                <Card key={index} className="group bg-white/5 backdrop-blur-sm border border-white/10 hover:border-primary/30 hover:-translate-y-2 transition-all duration-300">
                                     <CardHeader className="pb-4">
                                         <div className="flex items-center justify-between mb-4">
                                             <div className={`p-3 rounded-lg bg-gradient-to-r ${feature.color} text-white group-hover:scale-110 transition-transform duration-300`}><feature.icon className="h-6 w-6" /></div>
@@ -230,7 +329,7 @@ const Index = () => {
                 </section>
                 
                 {/* Stats Section */}
-                <section className="py-20 bg-gradient-to-r from-blue-900 via-blue-800 to-green-800 text-white relative overflow-hidden">
+                <section className="py-20 bg-gradient-to-br from-orange-500/80 via-black/70 to-green-600/80 text-white relative overflow-hidden">
                     <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Cpath d=\'m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
                     <div className="container mx-auto px-4 lg:px-8 relative z-10">
                         <div className="text-center mb-16">
@@ -253,7 +352,7 @@ const Index = () => {
             </main>
 
             {/* Footer Section */}
-            <footer id="support" className="bg-muted/30 border-t">
+            <footer id="support" className="bg-background border-t border-white/10">
                 <div className="container mx-auto px-4 lg:px-8 py-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         <div className="space-y-4">

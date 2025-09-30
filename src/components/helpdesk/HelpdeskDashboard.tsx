@@ -106,46 +106,46 @@ export function HelpdeskDashboard() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Assigned Tickets</CardTitle>
             <Ticket className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
+            <div className="text-2xl font-bold text-primary">{stats.total}</div>
             <p className="text-xs text-muted-foreground">Total assigned to you</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Open Tickets</CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-600">{stats.open}</div>
+            <div className="text-2xl font-bold text-orange-500">{stats.open}</div>
             <p className="text-xs text-muted-foreground">Need attention</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">In Progress</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats.in_progress}</div>
+            <div className="text-2xl font-bold text-blue-500">{stats.in_progress}</div>
             <p className="text-xs text-muted-foreground">Currently working</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-colors">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Resolved</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.resolved + stats.closed}</div>
+            <div className="text-2xl font-bold text-green-500">{stats.resolved + stats.closed}</div>
             <p className="text-xs text-muted-foreground">Completed tickets</p>
           </CardContent>
         </Card>
@@ -154,7 +154,7 @@ export function HelpdeskDashboard() {
       {/* Status Chart */}
       {statusData.length > 0 && (
         <div className="grid gap-4 md:grid-cols-2">
-          <Card className="col-span-full">
+          <Card className="col-span-full bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader>
               <CardTitle>Ticket Status Distribution</CardTitle>
             </CardHeader>
@@ -187,7 +187,7 @@ export function HelpdeskDashboard() {
       )}
 
       {stats.total === 0 && (
-        <Card>
+        <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
           <CardContent className="pt-6">
             <div className="text-center">
               <Headphones className="mx-auto h-12 w-12 text-muted-foreground" />

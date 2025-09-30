@@ -14,11 +14,11 @@ export default function Setup() {
       {/* Background from Index.tsx */}
       <div className="absolute inset-0 z-0">
         <img src={heroPowergrid} alt="PowerGrid IT Infrastructure" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/80 to-green-800/90" />
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/80 via-black/50 to-green-600/80" />
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        <Card className="bg-background/80 backdrop-blur-sm border-border/50 shadow-2xl">
+        <Card className="bg-white/10 backdrop-blur-sm border border-white/20 shadow-2xl text-white">
           <CardHeader>
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
@@ -28,7 +28,7 @@ export default function Setup() {
                   <span className="text-xs text-muted-foreground -mt-1">IT Sahayata Desk</span>
                 </div>
               </div>
-              <h1 className="text-2xl font-bold text-foreground">Create Your Account</h1>
+              <h1 className="text-2xl font-bold">Create Your Account</h1>
             </div>
           </CardHeader>
           <CardContent>

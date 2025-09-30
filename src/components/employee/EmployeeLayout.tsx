@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import powerGrideLogo from '@/assets/powerGrideLogo.png';
+import { cn } from '@/lib/utils';
 import { 
   LayoutDashboard, 
   Plus, 
@@ -46,10 +47,10 @@ export function EmployeeLayout({ children }: EmployeeLayoutProps) {
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="flex items-center justify-between h-16 px-6 border-b">
+        <div className="flex items-center justify-between h-16 px-6 border-b border-border">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
             <img src={powerGrideLogo} alt="POWERGRID Logo" className="h-8 w-8" />
             <div className="flex flex-col">
@@ -73,13 +74,12 @@ export function EmployeeLayout({ children }: EmployeeLayoutProps) {
               <NavLink
                 key={item.name}
                 to={item.href}
-                className={({ isActive }) =>
-                  `flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={({ isActive }) => cn(
+                  "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
                     isActive
                       ? 'bg-primary text-primary-foreground'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  }`
-                }
+                )}
                 onClick={() => setSidebarOpen(false)}
               >
                 <item.icon className="mr-3 h-4 w-4" />
@@ -89,7 +89,7 @@ export function EmployeeLayout({ children }: EmployeeLayoutProps) {
           </div>
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
           <div className="mb-4">
             <p className="text-sm font-medium text-foreground">{profile?.full_name}</p>
             <p className="text-xs text-muted-foreground">{profile?.email}</p>
@@ -108,7 +108,7 @@ export function EmployeeLayout({ children }: EmployeeLayoutProps) {
 
       {/* Main content */}
       <div className="flex-1 lg:ml-0">
-        <header className="bg-card border-b px-6 py-4 lg:hidden">
+        <header className="bg-card border-b border-border px-6 py-4 lg:hidden">
           <Button
             variant="ghost"
             size="sm"

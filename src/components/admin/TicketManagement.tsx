@@ -138,7 +138,7 @@ export function TicketManagement() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle>Filters</CardTitle>
         </CardHeader>
@@ -186,7 +186,7 @@ export function TicketManagement() {
       </Card>
 
       {/* Tickets Table */}
-      <Card>
+      <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle>All Tickets</CardTitle>
         </CardHeader>

@@ -17,7 +17,7 @@ const NotFound = () => {
       {/* Background from Index.tsx */}
       <div className="absolute inset-0 z-0">
         <img src={heroPowergrid} alt="PowerGrid IT Infrastructure" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/80 to-green-800/90" />
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/80 via-black/50 to-green-600/80" />
       </div>
 
       <div className="relative z-10 text-center space-y-6">

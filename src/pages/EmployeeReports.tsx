@@ -140,7 +140,7 @@ const EmployeeReports = () => {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Tickets</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -150,7 +150,7 @@ const EmployeeReports = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Open Tickets</CardTitle>
               <AlertCircle className="h-4 w-4 text-muted-foreground" />
@@ -160,7 +160,7 @@ const EmployeeReports = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Resolved Tickets</CardTitle>
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
@@ -170,7 +170,7 @@ const EmployeeReports = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Avg Resolution (hrs)</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
@@ -184,7 +184,7 @@ const EmployeeReports = () => {
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* My Tickets by Category */}
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader>
               <CardTitle>My Tickets by Category</CardTitle>
             </CardHeader>
@@ -203,7 +203,7 @@ const EmployeeReports = () => {
           </Card>
 
           {/* My Ticket Creation Trends */}
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader>
               <CardTitle>My Ticket Creation Trends (Last 30 Days)</CardTitle>
             </CardHeader>

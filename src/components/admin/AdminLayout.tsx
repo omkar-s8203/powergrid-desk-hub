@@ -42,7 +42,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
       <div className={cn(
-        "bg-sidebar border-r border-sidebar-border transition-all duration-300 flex flex-col",
+        "bg-card border-r border-border transition-all duration-300 flex flex-col",
         sidebarOpen ? "w-64" : "w-16"
       )}>
         {/* Header */}
@@ -50,14 +50,14 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           {sidebarOpen && (
             <div className="flex items-center space-x-2">
               <img src={powerGrideLogo} alt="POWERGRID Logo" className="h-8 w-8" />
-              <span className="font-semibold text-sidebar-foreground">Admin Panel</span>
+              <span className="font-semibold text-foreground">Admin Panel</span>
             </div>
           )}
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-sidebar-foreground hover:bg-sidebar-accent"
+            className="text-foreground hover:bg-muted"
           >
             {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </Button>
@@ -72,9 +72,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 key={item.name}
                 variant={isActive ? "secondary" : "ghost"}
                 className={cn(
-                  "w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent",
+                  "w-full justify-start text-muted-foreground hover:bg-muted hover:text-foreground",
                   !sidebarOpen && "px-2",
-                  isActive && "bg-sidebar-accent"
+                  isActive && "bg-muted text-foreground"
                 )}
                 onClick={() => navigate(item.href)}
               >
@@ -86,19 +86,19 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         </nav>
 
         {/* User Profile & Sign Out */}
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="p-4 border-t border-border">
           {sidebarOpen && (
-            <div className="mb-3 p-2 bg-sidebar-accent rounded">
-              <p className="text-sm font-medium text-sidebar-foreground">
+            <div className="mb-3 p-2 bg-muted rounded">
+              <p className="text-sm font-medium text-foreground">
                 {profile?.full_name}
               </p>
-              <p className="text-xs text-sidebar-foreground/70">Administrator</p>
+              <p className="text-xs text-muted-foreground">Administrator</p>
             </div>
           )}
           <Button
             variant="ghost"
             className={cn(
-              "w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent",
+              "w-full justify-start text-muted-foreground hover:bg-muted hover:text-foreground",
               !sidebarOpen && "px-2"
             )}
             onClick={handleSignOut}

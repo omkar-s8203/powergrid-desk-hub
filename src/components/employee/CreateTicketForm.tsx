@@ -89,7 +89,7 @@ export function CreateTicketForm() {
         <p className="text-muted-foreground">Submit a new support request</p>
       </div>
 
-      <Card className="max-w-2xl">
+      <Card className="max-w-2xl bg-white/5 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Plus className="h-5 w-5" />

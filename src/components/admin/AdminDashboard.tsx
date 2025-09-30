@@ -130,7 +130,7 @@ export function AdminDashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, index) => (
-          <Card key={index} className="hover:shadow-md transition-shadow">
+          <Card key={index} className="bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-colors">
             <CardContent className="p-6">
               <div className="flex items-center space-x-4">
                 <div className={`p-3 rounded-full ${stat.bgColor}`}>
@@ -152,19 +152,19 @@ export function AdminDashboard() {
 
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <Card className="p-4 hover:bg-muted/50 cursor-pointer transition-colors">
+              <Card className="p-4 bg-white/5 hover:bg-white/10 cursor-pointer transition-colors">
                 <div className="flex items-center space-x-2">
                   <Users className="h-4 w-4 text-primary" />
                   <span className="text-sm font-medium">Manage Users</span>
                 </div>
               </Card>
-              <Card className="p-4 hover:bg-muted/50 cursor-pointer transition-colors">
+              <Card className="p-4 bg-white/5 hover:bg-white/10 cursor-pointer transition-colors">
                 <div className="flex items-center space-x-2">
                   <Ticket className="h-4 w-4 text-primary" />
                   <span className="text-sm font-medium">View Tickets</span>
@@ -174,7 +174,7 @@ export function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
           <CardHeader>
             <CardTitle>System Status</CardTitle>
           </CardHeader>

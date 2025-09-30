@@ -155,7 +155,7 @@ const HelpdeskReports = () => {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Assigned Tickets</CardTitle>
               <AlertCircle className="h-4 w-4 text-muted-foreground" />
@@ -165,7 +165,7 @@ const HelpdeskReports = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Resolved</CardTitle>
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
@@ -175,7 +175,7 @@ const HelpdeskReports = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">In Progress</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
@@ -185,7 +185,7 @@ const HelpdeskReports = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Resolution Rate</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -195,7 +195,7 @@ const HelpdeskReports = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Avg Resolution (hrs)</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
@@ -209,7 +209,7 @@ const HelpdeskReports = () => {
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Tickets by Category */}
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader>
               <CardTitle>My Tickets by Category</CardTitle>
             </CardHeader>
@@ -228,7 +228,7 @@ const HelpdeskReports = () => {
           </Card>
 
           {/* Performance Metrics */}
-          <Card>
+          <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader>
               <CardTitle>Performance vs Targets</CardTitle>
             </CardHeader>
@@ -248,7 +248,7 @@ const HelpdeskReports = () => {
           </Card>
 
           {/* Daily Resolutions */}
-          <Card className="lg:col-span-2">
+          <Card className="lg:col-span-2 bg-white/5 backdrop-blur-sm border border-white/10">
             <CardHeader>
               <CardTitle>Daily Resolutions (Last 14 Days)</CardTitle>
             </CardHeader>

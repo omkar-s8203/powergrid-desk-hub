@@ -120,7 +120,7 @@ export function UserManagement() {
         </Button>
       </div>
 
-      <Card>
+      <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle>All Users</CardTitle>
           <div className="flex items-center space-x-2 max-w-sm">

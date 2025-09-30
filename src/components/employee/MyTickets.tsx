@@ -130,7 +130,7 @@ export function MyTickets() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
         <CardContent className="pt-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <div className="relative flex-1">
@@ -172,7 +172,7 @@ export function MyTickets() {
       </Card>
 
       {/* Tickets Table */}
-      <Card>
+      <Card className="bg-white/5 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
