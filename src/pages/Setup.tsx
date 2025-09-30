@@ -1,36 +1,42 @@
 import { SignupForm } from '@/components/auth/SignupForm';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Zap } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import heroPowergrid from '@/assets/hero-powergrid.jpg';
+import powerGrideLogo from '@/assets/powerGrideLogo.png';
 
 export default function Setup() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-primary/5 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-              <Zap className="h-6 w-6" />
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background from Index.tsx */}
+      <div className="absolute inset-0 z-0">
+        <img src={heroPowergrid} alt="PowerGrid IT Infrastructure" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/80 to-green-800/90" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-md">
+        <Card className="bg-background/80 backdrop-blur-sm border-border/50 shadow-2xl">
+          <CardHeader>
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+                <img src={powerGrideLogo} alt="POWERGRID Logo" className="h-8 w-8" />
+                <div className="flex flex-col items-start">
+                  <span className="text-lg font-bold text-primary">POWERGRID</span>
+                  <span className="text-xs text-muted-foreground -mt-1">IT Sahayata Desk</span>
+                </div>
+              </div>
+              <h1 className="text-2xl font-bold text-foreground">Create Your Account</h1>
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              PowerGrid HelpDesk Setup
-            </h1>
-          </div>
-        </div>
-
-        {/* Signup Form */}
-        <SignupForm />
-
-        {/* Back Button */}
-        <div className="text-center">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/')}
-            className="text-muted-foreground hover:text-foreground"
-          >
+          </CardHeader>
+          <CardContent>
+            <SignupForm />
+          </CardContent>
+        </Card>
+        <div className="text-center mt-6">
+          <Button variant="ghost" onClick={() => navigate('/')} className="text-white/80 hover:text-white hover:bg-white/10">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
           </Button>

@@ -2,8 +2,11 @@ import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LoginForm } from '@/components/auth/LoginForm';
 import { useAuth } from '@/components/auth/AuthContext';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Zap } from 'lucide-react';
+import powerGrideLogo from '@/assets/powerGrideLogo.png';
+import heroPowergrid from '@/assets/hero-powergrid.jpg';
+import { ArrowLeft } from 'lucide-react';
 
 export default function Login() {
   const { userType } = useParams<{ userType: string }>();
@@ -38,39 +41,55 @@ export default function Login() {
     // Navigation will be handled by the useEffect above
   };
 
+  const getTitle = () => {
+    switch (userType) {
+      case 'admin':
+        return 'Admin Portal';
+      case 'employee':
+        return 'Employee Login';
+      case 'it_helpdesk':
+        return 'IT Helpdesk Login';
+      default:
+        return 'Login';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-primary/5 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="bg-primary text-primary-foreground p-2 rounded-lg">
-              <Zap className="h-6 w-6" />
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        {/* Background from Index.tsx */}
+        <div className="absolute inset-0 z-0">
+            <img src={heroPowergrid} alt="PowerGrid IT Infrastructure" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/80 to-green-800/90" />
+        </div>
+
+        <div className="relative z-10 w-full max-w-md">
+            <Card className="bg-background/80 backdrop-blur-sm border-border/50 shadow-2xl">
+                <CardHeader>
+                    <div className="flex flex-col items-center text-center space-y-4">
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+                            <img src={powerGrideLogo} alt="POWERGRID Logo" className="h-8 w-8" />
+                            <div className="flex flex-col items-start">
+                                <span className="text-lg font-bold text-primary">POWERGRID</span>
+                                <span className="text-xs text-muted-foreground -mt-1">IT Sahayata Desk</span>
+                            </div>
+                        </div>
+                        <h1 className="text-2xl font-bold text-foreground">{getTitle()}</h1>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <LoginForm 
+                      userType={userType as 'admin' | 'employee' | 'it_helpdesk'} 
+                      onSuccess={handleSuccess} 
+                    />
+                </CardContent>
+            </Card>
+            <div className="text-center mt-6">
+                <Button variant="ghost" onClick={() => navigate('/')} className="text-white/80 hover:text-white hover:bg-white/10">
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Home
+                </Button>
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              PowerGrid HelpDesk
-            </h1>
-          </div>
         </div>
-
-        {/* Login Form */}
-        <LoginForm 
-          userType={userType as 'admin' | 'employee' | 'it_helpdesk'} 
-          onSuccess={handleSuccess} 
-        />
-
-        {/* Back Button */}
-        <div className="text-center">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/')}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Home
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }

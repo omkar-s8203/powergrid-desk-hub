@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import powerGrideLogo from '@/assets/powerGrideLogo.png';
 import { 
   LayoutDashboard, 
   Plus, 
@@ -49,7 +50,13 @@ export function EmployeeLayout({ children }: EmployeeLayoutProps) {
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex items-center justify-between h-16 px-6 border-b">
-          <h1 className="text-xl font-bold text-primary">PowerGrid Employee</h1>
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+            <img src={powerGrideLogo} alt="POWERGRID Logo" className="h-8 w-8" />
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-primary">POWERGRID</span>
+              <span className="text-xs text-muted-foreground -mt-1">Employee Portal</span>
+            </div>
+          </div>
           <Button
             variant="ghost"
             size="sm"

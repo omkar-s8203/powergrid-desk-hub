@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import powerGrideLogo from '@/assets/powerGrideLogo.png';
 import { useAuth } from '@/components/auth/AuthContext';
 import { Button } from '@/components/ui/button';
 import { 
@@ -48,7 +49,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
           {sidebarOpen && (
             <div className="flex items-center space-x-2">
-              <Shield className="h-6 w-6 text-primary" />
+              <img src={powerGrideLogo} alt="POWERGRID Logo" className="h-8 w-8" />
               <span className="font-semibold text-sidebar-foreground">Admin Panel</span>
             </div>
           )}
