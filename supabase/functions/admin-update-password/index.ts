@@ -43,8 +43,7 @@ serve(async (req) => {
       )
     }
 
-    // Set the auth header for the client
-    supabaseClient.auth.session = null
+    // Using service role key for admin operations
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
       authHeader.replace('Bearer ', '')
     )

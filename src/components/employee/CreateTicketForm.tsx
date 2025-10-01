@@ -49,7 +49,7 @@ export function CreateTicketForm() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
+      const { data: newTicket, error } = await supabase
         .from('tickets')
         .insert({
           title: values.title,
@@ -57,10 +57,31 @@ export function CreateTicketForm() {
           category: values.category,
           employee_id: profile.id,
           status: 'open',
-        });
+        })
+        .select()
+        .single();
 
       if (error) {
         throw error;
+      }
+
+      // Send notification webhook
+      if (newTicket) {
+        try {
+          await supabase.functions.invoke('notify-ticket-created', {
+            body: {
+              ticket_id: newTicket.id,
+              title: newTicket.title,
+              status: newTicket.status,
+              assigned_to: newTicket.assigned_to,
+              submitted_by: profile.id,
+              employee_email: profile.email,
+            },
+          });
+        } catch (webhookError) {
+          console.error('Failed to send notification:', webhookError);
+          // Don't fail the ticket creation if notification fails
+        }
       }
 
       toast({

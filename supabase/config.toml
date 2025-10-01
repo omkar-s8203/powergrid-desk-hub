@@ -26,3 +26,15 @@ image_transformation = {enabled = true}
 
 [functions.chatbot]
 verify_jwt = false
+
+[functions.admin-update-password]
+verify_jwt = true
+
+[functions.notify-ticket-created]
+verify_jwt = true
+
+[functions.notify-ticket-status-change]
+verify_jwt = true
+
+[functions.daily-ticket-summary]
+verify_jwt = false

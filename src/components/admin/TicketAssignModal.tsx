@@ -115,6 +115,28 @@ export function TicketAssignModal({ open, onClose, ticket, onSuccess }: TicketAs
 
       if (error) throw error;
 
+      // Send status change notification
+      if (data.assigned_to) {
+        try {
+          const { data: assignedProfile } = await supabase
+            .from('profiles')
+            .select('email')
+            .eq('id', data.assigned_to)
+            .single();
+
+          await supabase.functions.invoke('notify-ticket-status-change', {
+            body: {
+              ticket_id: ticket.id,
+              status: data.status,
+              assigned_to: data.assigned_to,
+              assigned_to_email: assignedProfile?.email,
+            },
+          });
+        } catch (webhookError) {
+          console.error('Failed to send status change notification:', webhookError);
+        }
+      }
+
       toast({
         title: "Success",
         description: "Ticket updated successfully",
