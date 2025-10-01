@@ -45,8 +45,9 @@ serve(async (req) => {
       systemPrompt = `You are PowerGrid's IT issue validator and router. Analyze employee IT issues and:
 1. Determine if this is a valid IT issue that requires helpdesk assistance
 2. If valid, categorize it into: hardware, software, network, access, or other
-3. Respond in JSON format: {"isValid": boolean, "category": "hardware|software|network|access|other|null", "summary": "brief issue summary", "response": "helpful response to user"}
-4. If not valid, still be helpful but mark as not requiring ticket creation`;
+3. Respond ONLY with a valid JSON object, no markdown formatting or code blocks
+4. JSON format: {"isValid": boolean, "category": "hardware|software|network|access|other|null", "summary": "brief issue summary", "response": "helpful response to user"}
+5. If not valid, still be helpful but mark as not requiring ticket creation`;
     }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -76,8 +77,17 @@ serve(async (req) => {
     // Handle issue validation and ticket creation for employees
     if (isIssueSubmission && userId) {
       try {
+        // Clean the response - remove markdown code blocks if present
+        let cleanedResponse = botResponse.trim();
+        if (cleanedResponse.startsWith('```json')) {
+          cleanedResponse = cleanedResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+        } else if (cleanedResponse.startsWith('```')) {
+          cleanedResponse = cleanedResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
+        }
+        
         // Try to parse JSON response for issue validation
-        const issueAnalysis = JSON.parse(botResponse);
+        const issueAnalysis = JSON.parse(cleanedResponse);
+        console.log('Parsed issue analysis:', issueAnalysis);
         
         if (issueAnalysis.isValid && issueAnalysis.category) {
           // Create ticket and assign to appropriate helpdesk staff
@@ -88,17 +98,20 @@ serve(async (req) => {
             issueAnalysis.category
           );
           
+          console.log('Ticket creation result:', ticketResult);
+          
           if (ticketResult.success) {
             botResponse = `${issueAnalysis.response}\n\n✅ I've created a ticket for your issue (Ticket #${ticketResult.ticketId}) and assigned it to our ${issueAnalysis.category} specialist: ${ticketResult.assignedTo}. They will contact you shortly to resolve this issue.`;
           } else {
-            botResponse = `${issueAnalysis.response}\n\n⚠️ I've validated your issue but couldn't automatically assign it right now. Please create a manual ticket through the system.`;
+            botResponse = `${issueAnalysis.response}\n\n⚠️ I've validated your issue but couldn't automatically assign it right now. Please create a manual ticket through the system. Error: ${ticketResult.error}`;
           }
         } else {
           botResponse = issueAnalysis.response || botResponse;
         }
       } catch (parseError) {
         // If JSON parsing fails, treat as regular response
-        console.log('Response not in JSON format, treating as regular chat:', parseError);
+        console.error('Failed to parse issue analysis:', parseError);
+        console.log('Raw response:', botResponse);
       }
     }
 
