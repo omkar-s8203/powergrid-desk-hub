@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthContext';
 import { Loader2, Plus } from 'lucide-react';
+import { ArticleSuggestions } from '@/components/knowledge/ArticleSuggestions';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title must be less than 100 characters'),
@@ -24,6 +25,7 @@ const formSchema = z.object({
 
 export function CreateTicketForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const { profile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -35,6 +37,18 @@ export function CreateTicketForm() {
       description: '',
     },
   });
+
+  const watchDescription = form.watch('description');
+  const watchCategory = form.watch('category');
+
+  useEffect(() => {
+    // Show suggestions when both description and category are filled
+    if (watchDescription && watchDescription.length > 20 && watchCategory) {
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+  }, [watchDescription, watchCategory]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!profile?.id) {
@@ -110,109 +124,120 @@ export function CreateTicketForm() {
         <p className="text-muted-foreground">Submit a new support request</p>
       </div>
 
-      <Card className="max-w-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
-            Ticket Details
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Brief description of the issue" 
-                        {...field} 
-                        disabled={isSubmitting}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value} disabled={isSubmitting}>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card className="max-w-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Plus className="h-5 w-5" />
+              Ticket Details
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
+                        <Input 
+                          placeholder="Brief description of the issue" 
+                          {...field} 
+                          disabled={isSubmitting}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="hardware">Hardware</SelectItem>
-                        <SelectItem value="software">Software</SelectItem>
-                        <SelectItem value="network">Network</SelectItem>
-                        <SelectItem value="access">Access</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Please provide detailed information about the issue..."
-                        className="min-h-[120px]"
-                        {...field} 
-                        disabled={isSubmitting}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex gap-4">
-                <Button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="flex-1"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating...
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create Ticket
-                    </>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => navigate('/employee/tickets')}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                />
+
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Category</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value} disabled={isSubmitting}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="hardware">Hardware</SelectItem>
+                          <SelectItem value="software">Software</SelectItem>
+                          <SelectItem value="network">Network</SelectItem>
+                          <SelectItem value="access">Access</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Please provide detailed information about the issue..."
+                          className="min-h-[120px]"
+                          {...field} 
+                          disabled={isSubmitting}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex gap-4">
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="flex-1"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Ticket
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => navigate('/employee/tickets')}
+                    disabled={isSubmitting}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        {showSuggestions && (
+          <div className="lg:sticky lg:top-6 h-fit">
+            <ArticleSuggestions 
+              ticketDescription={watchDescription}
+              category={watchCategory}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

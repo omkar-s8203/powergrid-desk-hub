@@ -9,7 +9,8 @@ import {
   BarChart3,
   LogOut, 
   Menu, 
-  X 
+  X,
+  BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/auth/AuthContext';
@@ -32,6 +33,7 @@ export function EmployeeLayout({ children }: EmployeeLayoutProps) {
     { name: 'Dashboard', href: '/employee', icon: LayoutDashboard },
     { name: 'Create Ticket', href: '/employee/create', icon: Plus },
     { name: 'My Tickets', href: '/employee/tickets', icon: FileText },
+    { name: 'Knowledge Base', href: '/employee/knowledge', icon: BookOpen },
     { name: 'My Reports', href: '/employee/reports', icon: BarChart3 },
   ];
 

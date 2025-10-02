@@ -12,13 +12,16 @@ import Admin from "./pages/Admin";
 import AdminUsers from "./pages/AdminUsers";
 import AdminTickets from "./pages/AdminTickets";
 import AdminDemo from "./pages/AdminDemo";
+import AdminKnowledge from "./pages/AdminKnowledge";
 import Employee from "./pages/Employee";
 import CreateTicket from "./pages/CreateTicket";
 import EmployeeTickets from "./pages/EmployeeTickets";
 import EmployeeReports from "./pages/EmployeeReports";
+import EmployeeKnowledge from "./pages/EmployeeKnowledge";
 import Helpdesk from "./pages/Helpdesk";
 import HelpdeskTickets from "./pages/HelpdeskTickets";
 import HelpdeskReports from "./pages/HelpdeskReports";
+import HelpdeskKnowledge from "./pages/HelpdeskKnowledge";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,13 +41,16 @@ const App = () => (
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/tickets" element={<AdminTickets />} />
             <Route path="/admin/demo" element={<AdminDemo />} />
+            <Route path="/admin/knowledge" element={<AdminKnowledge />} />
             <Route path="/employee" element={<Employee />} />
             <Route path="/employee/create" element={<CreateTicket />} />
             <Route path="/employee/tickets" element={<EmployeeTickets />} />
             <Route path="/employee/reports" element={<EmployeeReports />} />
+            <Route path="/employee/knowledge" element={<EmployeeKnowledge />} />
             <Route path="/helpdesk" element={<Helpdesk />} />
             <Route path="/helpdesk/tickets" element={<HelpdeskTickets />} />
             <Route path="/helpdesk/reports" element={<HelpdeskReports />} />
+            <Route path="/helpdesk/knowledge" element={<HelpdeskKnowledge />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

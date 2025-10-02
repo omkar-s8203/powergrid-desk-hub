@@ -8,7 +8,8 @@ import {
   BarChart3, 
   LogOut, 
   Menu, 
-  X 
+  X,
+  BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +32,7 @@ export function HelpdeskLayout({ children }: HelpdeskLayoutProps) {
   const navigationItems = [
     { name: 'Dashboard', href: '/helpdesk', icon: LayoutDashboard },
     { name: 'Assigned Tickets', href: '/helpdesk/tickets', icon: Headphones },
+    { name: 'Knowledge Base', href: '/helpdesk/knowledge', icon: BookOpen },
     { name: 'Performance', href: '/helpdesk/reports', icon: BarChart3 },
   ];
 

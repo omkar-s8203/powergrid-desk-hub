@@ -11,7 +11,8 @@ import {
   LogOut,
   Menu,
   X,
-  Shield
+  Shield,
+  BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -29,6 +30,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
+    { name: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
     { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
     { name: 'AI Demo', href: '/admin/demo', icon: BarChart3 },
   ];

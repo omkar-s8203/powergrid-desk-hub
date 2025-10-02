@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      knowledge_base: {
+        Row: {
+          category: Database["public"]["Enums"]["ticket_category"]
+          content: string
+          created_at: string
+          created_by: string
+          helpful_count: number
+          id: string
+          status: string
+          title: string
+          updated_at: string
+          video_url: string | null
+          views_count: number
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["ticket_category"]
+          content: string
+          created_at?: string
+          created_by: string
+          helpful_count?: number
+          id?: string
+          status?: string
+          title: string
+          updated_at?: string
+          video_url?: string | null
+          views_count?: number
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["ticket_category"]
+          content?: string
+          created_at?: string
+          created_by?: string
+          helpful_count?: number
+          id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+          views_count?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
