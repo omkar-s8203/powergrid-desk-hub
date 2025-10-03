@@ -9,9 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Check, X, Edit, Trash2, Video } from 'lucide-react';
+import { Plus, Check, X, Edit, Trash2, Video, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/auth/AuthContext';
+import { ArticleDetailModal } from './ArticleDetailModal';
 
 interface KnowledgeArticle {
   id: string;
@@ -22,6 +23,8 @@ interface KnowledgeArticle {
   status: string;
   created_by: string;
   created_at: string;
+  views_count: number;
+  helpful_count: number;
 }
 
 export const AdminKnowledgeBase = () => {
@@ -29,6 +32,8 @@ export const AdminKnowledgeBase = () => {
   const [pendingArticles, setPendingArticles] = useState<KnowledgeArticle[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<KnowledgeArticle | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<KnowledgeArticle | null>(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
   const { toast } = useToast();
   const { profile } = useAuth();
 
@@ -194,6 +199,17 @@ export const AdminKnowledgeBase = () => {
     setIsDialogOpen(true);
   };
 
+  const handleArticleClick = (article: KnowledgeArticle) => {
+    setSelectedArticle(article);
+    setDetailModalOpen(true);
+  };
+
+  const handleLikeUpdate = (articleId: string, newLikeCount: number) => {
+    setArticles(articles.map(a =>
+      a.id === articleId ? { ...a, helpful_count: newLikeCount } : a
+    ));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -294,7 +310,13 @@ export const AdminKnowledgeBase = () => {
                   <TableRow key={article.id}>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        {article.title}
+                        <button
+                          onClick={() => handleArticleClick(article)}
+                          className="text-primary hover:underline font-medium flex items-center gap-2"
+                        >
+                          {article.title}
+                          <Eye className="w-4 h-4" />
+                        </button>
                         {article.video_url && <Video className="w-4 h-4 text-muted-foreground" />}
                       </div>
                     </TableCell>
@@ -336,13 +358,19 @@ export const AdminKnowledgeBase = () => {
             </TableHeader>
             <TableBody>
               {articles.map((article) => (
-                <TableRow key={article.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {article.title}
-                      {article.video_url && <Video className="w-4 h-4 text-muted-foreground" />}
-                    </div>
-                  </TableCell>
+                  <TableRow key={article.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleArticleClick(article)}
+                          className="text-primary hover:underline font-medium flex items-center gap-2"
+                        >
+                          {article.title}
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        {article.video_url && <Video className="w-4 h-4 text-muted-foreground" />}
+                      </div>
+                    </TableCell>
                   <TableCell>
                     <Badge variant="outline" className="capitalize">{article.category}</Badge>
                   </TableCell>
@@ -363,6 +391,16 @@ export const AdminKnowledgeBase = () => {
           </Table>
         </CardContent>
       </Card>
+
+      <ArticleDetailModal
+        article={selectedArticle}
+        open={detailModalOpen}
+        onClose={() => {
+          setDetailModalOpen(false);
+          setSelectedArticle(null);
+        }}
+        onLikeUpdate={handleLikeUpdate}
+      />
     </div>
   );
 };

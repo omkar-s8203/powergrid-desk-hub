@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BookOpen, Video, ThumbsUp, Eye, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { ArticleDetailModal } from './ArticleDetailModal';
 
 interface KnowledgeArticle {
   id: string;
@@ -25,6 +26,8 @@ export const KnowledgeBaseList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
+  const [selectedArticle, setSelectedArticle] = useState<KnowledgeArticle | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -74,43 +77,15 @@ export const KnowledgeBaseList = () => {
     setFilteredArticles(filtered);
   };
 
-  const markAsHelpful = async (articleId: string) => {
-    try {
-      const article = articles.find(a => a.id === articleId);
-      if (!article) return;
-
-      const { error } = await supabase
-        .from('knowledge_base')
-        .update({ helpful_count: article.helpful_count + 1 })
-        .eq('id', articleId);
-
-      if (error) throw error;
-
-      setArticles(articles.map(a =>
-        a.id === articleId ? { ...a, helpful_count: a.helpful_count + 1 } : a
-      ));
-
-      toast({
-        title: 'Thank you!',
-        description: 'Your feedback helps us improve our knowledge base',
-      });
-    } catch (error) {
-      console.error('Error marking as helpful:', error);
-    }
+  const handleArticleClick = (article: KnowledgeArticle) => {
+    setSelectedArticle(article);
+    setModalOpen(true);
   };
 
-  const incrementViews = async (articleId: string) => {
-    try {
-      const article = articles.find(a => a.id === articleId);
-      if (!article) return;
-
-      await supabase
-        .from('knowledge_base')
-        .update({ views_count: article.views_count + 1 })
-        .eq('id', articleId);
-    } catch (error) {
-      console.error('Error incrementing views:', error);
-    }
+  const handleLikeUpdate = (articleId: string, newLikeCount: number) => {
+    setArticles(articles.map(a =>
+      a.id === articleId ? { ...a, helpful_count: newLikeCount } : a
+    ));
   };
 
   const categories = ['all', 'hardware', 'software', 'network', 'access', 'other'];
@@ -145,7 +120,11 @@ export const KnowledgeBaseList = () => {
 
       <div className="grid gap-4 md:grid-cols-2">
         {filteredArticles.map((article) => (
-          <Card key={article.id} className="hover:shadow-lg transition-shadow">
+          <Card 
+            key={article.id} 
+            className="hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => handleArticleClick(article)}
+          >
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="space-y-1 flex-1">
@@ -169,18 +148,6 @@ export const KnowledgeBaseList = () => {
                 {article.content}
               </p>
 
-              {article.video_url && (
-                <div className="aspect-video rounded-md overflow-hidden bg-muted">
-                  <iframe
-                    src={article.video_url}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    onLoad={() => incrementViews(article.id)}
-                  />
-                </div>
-              )}
-
               <div className="flex items-center justify-between pt-2">
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
@@ -192,14 +159,6 @@ export const KnowledgeBaseList = () => {
                     {article.helpful_count}
                   </span>
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => markAsHelpful(article.id)}
-                >
-                  <ThumbsUp className="w-4 h-4 mr-2" />
-                  Helpful
-                </Button>
               </div>
             </CardContent>
           </Card>
@@ -212,6 +171,16 @@ export const KnowledgeBaseList = () => {
           <p className="text-muted-foreground">No articles found</p>
         </div>
       )}
+
+      <ArticleDetailModal
+        article={selectedArticle}
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedArticle(null);
+        }}
+        onLikeUpdate={handleLikeUpdate}
+      />
     </div>
   );
 };
