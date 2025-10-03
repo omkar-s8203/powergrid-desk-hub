@@ -44,12 +44,16 @@ export function PasswordChangeModal({ open, onClose, userId, userName }: Passwor
 
     setLoading(true);
     try {
+      console.log('Starting password update for user:', userId);
+      
       // Get the current session to pass auth token
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
         throw new Error('No active session');
       }
+
+      console.log('Calling admin-update-password edge function');
 
       // Call the edge function to update password
       const { data, error } = await supabase.functions.invoke('admin-update-password', {
@@ -62,8 +66,16 @@ export function PasswordChangeModal({ open, onClose, userId, userName }: Passwor
         }
       });
 
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+      console.log('Edge function response:', { data, error });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
+      if (data?.error) {
+        console.error('Data error:', data.error);
+        throw new Error(data.error);
+      }
 
       toast({
         title: "Success",
