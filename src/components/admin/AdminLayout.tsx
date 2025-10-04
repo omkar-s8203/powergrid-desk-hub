@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation, NavLink } from 'react-router-dom';
 import powerGrideLogo from '@/assets/powerGrideLogo.png';
 import { useAuth } from '@/components/auth/AuthContext';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { 
   LayoutDashboard, 
   Users, 
@@ -21,7 +22,7 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { signOut, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,7 +33,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
     { name: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
     { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
-    { name: 'AI Demo', href: '/admin/demo', icon: BarChart3 },
+    { name: 'AI Demo', href: '/admin/demo', icon: Shield },
   ];
 
   const handleSignOut = async () => {
@@ -41,81 +42,94 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex">
+      {/* Mobile sidebar backdrop */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div className={cn(
-        "bg-card border-r border-border transition-all duration-300 flex flex-col",
-        sidebarOpen ? "w-64" : "w-16"
-      )}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
-          {sidebarOpen && (
-            <div className="flex items-center space-x-2">
-              <img src={powerGrideLogo} alt="POWERGRID Logo" className="h-8 w-8" />
-              <span className="font-semibold text-foreground">Admin Panel</span>
+      <div className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="flex items-center justify-between h-16 px-6 border-b border-border">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+            <img src={powerGrideLogo} alt="POWERGRID Logo" className="h-8 w-8" />
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-primary">POWERGRID</span>
+              <span className="text-xs text-muted-foreground -mt-1">Admin Panel</span>
             </div>
-          )}
+          </div>
           <Button
             variant="ghost"
-            size="icon"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-foreground hover:bg-muted"
+            size="sm"
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden"
           >
-            {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            <X className="h-4 w-4" />
           </Button>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
-          {navigation.map((item) => {
-            const isActive = location.pathname === item.href;
-            return (
-              <Button
+        <nav className="mt-6 px-3">
+          <div className="space-y-1">
+            {navigation.map((item) => (
+              <NavLink
                 key={item.name}
-                variant={isActive ? "secondary" : "ghost"}
-                className={cn(
-                  "w-full justify-start text-muted-foreground hover:bg-muted hover:text-foreground",
-                  !sidebarOpen && "px-2",
-                  isActive && "bg-muted text-foreground"
+                to={item.href}
+                className={({ isActive }) => cn(
+                  "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                  isActive
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
-                onClick={() => navigate(item.href)}
+                onClick={() => setSidebarOpen(false)}
               >
-                <item.icon className="h-4 w-4" />
-                {sidebarOpen && <span className="ml-2">{item.name}</span>}
-              </Button>
-            );
-          })}
+                <item.icon className="mr-3 h-4 w-4" />
+                {item.name}
+              </NavLink>
+            ))}
+          </div>
         </nav>
 
-        {/* User Profile & Sign Out */}
-        <div className="p-4 border-t border-border">
-          {sidebarOpen && (
-            <div className="mb-3 p-2 bg-muted rounded">
-              <p className="text-sm font-medium text-foreground">
-                {profile?.full_name}
-              </p>
-              <p className="text-xs text-muted-foreground">Administrator</p>
-            </div>
-          )}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
+          <div className="mb-4">
+            <p className="text-sm font-medium text-foreground">{profile?.full_name}</p>
+            <p className="text-xs text-muted-foreground">{profile?.email}</p>
+            <Badge variant="secondary" className="text-xs mt-2">
+              Administrator
+            </Badge>
+          </div>
           <Button
-            variant="ghost"
-            className={cn(
-              "w-full justify-start text-muted-foreground hover:bg-muted hover:text-foreground",
-              !sidebarOpen && "px-2"
-            )}
+            variant="outline"
+            size="sm"
             onClick={handleSignOut}
+            className="w-full"
           >
-            <LogOut className="h-4 w-4" />
-            {sidebarOpen && <span className="ml-2">Sign Out</span>}
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
           </Button>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <div className="flex-1 p-6 overflow-auto">
+      {/* Main content */}
+      <div className="flex-1 lg:ml-0">
+        <header className="bg-card border-b border-border px-6 py-4 lg:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
+        </header>
+        
+        <main className="p-6">
           {children || <Outlet />}
-        </div>
+        </main>
       </div>
     </div>
   );
