@@ -49,7 +49,7 @@ export function TicketAssignModal({ open, onClose, ticket, onSuccess }: TicketAs
   const form = useForm<AssignFormData>({
     resolver: zodResolver(assignSchema),
     defaultValues: {
-      assigned_to: '',
+      assigned_to: 'unassigned',
       status: 'open',
       resolution_notes: '',
     },
@@ -64,7 +64,7 @@ export function TicketAssignModal({ open, onClose, ticket, onSuccess }: TicketAs
   useEffect(() => {
     if (ticket) {
       form.reset({
-        assigned_to: ticket.assigned_to || '',
+        assigned_to: ticket.assigned_to || 'unassigned',
         status: ticket.status as any,
         resolution_notes: ticket.resolution_notes || '',
       });
@@ -102,7 +102,7 @@ export function TicketAssignModal({ open, onClose, ticket, onSuccess }: TicketAs
         resolution_notes: data.resolution_notes || null,
       };
 
-      if (data.assigned_to) {
+      if (data.assigned_to && data.assigned_to !== 'unassigned') {
         updateData.assigned_to = data.assigned_to;
       } else {
         updateData.assigned_to = null;
@@ -189,7 +189,7 @@ export function TicketAssignModal({ open, onClose, ticket, onSuccess }: TicketAs
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">Unassigned</SelectItem>
+                      <SelectItem value="unassigned">Unassigned</SelectItem>
                       {getRelevantHelpDeskUsers().map((user) => (
                         <SelectItem key={user.id} value={user.id}>
                           <div className="flex flex-col">
