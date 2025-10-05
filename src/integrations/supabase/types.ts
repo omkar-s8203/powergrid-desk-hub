@@ -226,6 +226,8 @@ export type Database = {
           resolution_notes: string | null
           status: Database["public"]["Enums"]["ticket_status"]
           title: string
+          transfer_reason: string | null
+          transfer_requested: boolean
           updated_at: string
         }
         Insert: {
@@ -238,6 +240,8 @@ export type Database = {
           resolution_notes?: string | null
           status?: Database["public"]["Enums"]["ticket_status"]
           title: string
+          transfer_reason?: string | null
+          transfer_requested?: boolean
           updated_at?: string
         }
         Update: {
@@ -250,6 +254,8 @@ export type Database = {
           resolution_notes?: string | null
           status?: Database["public"]["Enums"]["ticket_status"]
           title?: string
+          transfer_reason?: string | null
+          transfer_requested?: boolean
           updated_at?: string
         }
         Relationships: [

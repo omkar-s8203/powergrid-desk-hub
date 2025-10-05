@@ -22,6 +22,8 @@ interface Ticket {
   updated_at: string;
   employee_id: string;
   resolution_notes: string | null;
+  transfer_requested: boolean;
+  transfer_reason: string | null;
   employee?: {
     full_name: string;
     email: string;

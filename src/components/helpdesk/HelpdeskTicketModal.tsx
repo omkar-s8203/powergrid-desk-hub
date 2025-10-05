@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
-import { CheckCircle, Clock, User, Calendar, Tag, FileText, Play, Save, Loader2 } from 'lucide-react';
+import { CheckCircle, Clock, User, Calendar, Tag, FileText, Play, Save, Loader2, UserCog } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { TicketChat } from '@/components/chat/TicketChat';
@@ -22,6 +22,8 @@ interface Ticket {
   updated_at: string;
   employee_id: string;
   resolution_notes: string | null;
+  transfer_requested: boolean;
+  transfer_reason: string | null;
   employee?: {
     full_name: string;
     email: string;
@@ -43,6 +45,8 @@ export function HelpdeskTicketModal({
 }: HelpdeskTicketModalProps) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [resolutionNotes, setResolutionNotes] = useState(ticket.resolution_notes || '');
+  const [showTransferDialog, setShowTransferDialog] = useState(false);
+  const [transferReason, setTransferReason] = useState('');
   const { toast } = useToast();
 
   const updateTicketStatus = async (newStatus: 'open' | 'in_progress' | 'resolved' | 'closed') => {
@@ -99,6 +103,51 @@ export function HelpdeskTicketModal({
       toast({
         title: 'Error',
         description: 'Failed to save resolution notes. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const requestTransfer = async () => {
+    if (!transferReason.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Please provide a reason for the transfer request',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const { error } = await supabase
+        .from('tickets')
+        .update({ 
+          transfer_requested: true,
+          transfer_reason: transferReason 
+        })
+        .eq('id', ticket.id);
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: 'Transfer Request Sent',
+        description: 'Admin has been notified to reassign this ticket',
+      });
+
+      setShowTransferDialog(false);
+      setTransferReason('');
+      onTicketUpdate();
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Error requesting transfer:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to send transfer request. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -239,7 +288,7 @@ export function HelpdeskTicketModal({
             {/* Status Actions */}
             <Separator />
             <div className="space-y-4">
-              <h3 className="font-semibold">Update Status</h3>
+              <h3 className="font-semibold">Actions</h3>
               <div className="flex flex-wrap gap-3">
                 {ticket.status === 'open' && (
                   <Button
@@ -253,14 +302,34 @@ export function HelpdeskTicketModal({
                 )}
                 
                 {ticket.status === 'in_progress' && (
-                  <Button
-                    onClick={() => updateTicketStatus('resolved')}
-                    disabled={isUpdating}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    Mark as Resolved
-                  </Button>
+                  <>
+                    <Button
+                      onClick={() => updateTicketStatus('resolved')}
+                      disabled={isUpdating}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      Mark as Resolved
+                    </Button>
+                    
+                    {!ticket.transfer_requested && (
+                      <Button
+                        onClick={() => setShowTransferDialog(true)}
+                        disabled={isUpdating}
+                        variant="outline"
+                        className="border-orange-200 text-orange-700 hover:bg-orange-50"
+                      >
+                        <UserCog className="mr-2 h-4 w-4" />
+                        Request Transfer
+                      </Button>
+                    )}
+                    
+                    {ticket.transfer_requested && (
+                      <Badge className="bg-orange-100 text-orange-800 px-3 py-1">
+                        Transfer Requested
+                      </Badge>
+                    )}
+                  </>
                 )}
 
                 {(ticket.status === 'resolved' || ticket.status === 'in_progress') && (
@@ -283,6 +352,51 @@ export function HelpdeskTicketModal({
           </div>
         </ScrollArea>
       </DialogContent>
+
+      {/* Transfer Request Dialog */}
+      <Dialog open={showTransferDialog} onOpenChange={setShowTransferDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request Ticket Transfer</DialogTitle>
+            <DialogDescription>
+              Explain why you need this ticket transferred to another team member
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="transfer-reason">Transfer Reason</Label>
+              <Textarea
+                id="transfer-reason"
+                placeholder="E.g., This issue requires hardware expertise that I don't have..."
+                value={transferReason}
+                onChange={(e) => setTransferReason(e.target.value)}
+                className="min-h-[100px]"
+                disabled={isUpdating}
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowTransferDialog(false);
+                  setTransferReason('');
+                }}
+                disabled={isUpdating}
+              >
+                Cancel
+              </Button>
+              <Button onClick={requestTransfer} disabled={isUpdating}>
+                {isUpdating ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <UserCog className="mr-2 h-4 w-4" />
+                )}
+                Send Request
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }

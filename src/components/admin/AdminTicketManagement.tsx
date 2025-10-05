@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Search, Eye, UserCog, Settings } from 'lucide-react';
+import { Search, Eye, UserCog, Settings, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -21,6 +21,8 @@ interface Ticket {
   created_at: string;
   updated_at: string;
   assigned_to: string | null;
+  transfer_requested: boolean;
+  transfer_reason: string | null;
   employee?: {
     full_name: string;
     email: string;
@@ -130,7 +132,9 @@ export function AdminTicketManagement() {
         .from('tickets')
         .update({ 
           assigned_to: selectedAssignee === 'unassigned' ? null : selectedAssignee,
-          status: selectedAssignee === 'unassigned' ? 'open' : 'in_progress'
+          status: selectedAssignee === 'unassigned' ? 'open' : 'in_progress',
+          transfer_requested: false,
+          transfer_reason: null
         })
         .eq('id', selectedTicket.id);
 
@@ -252,6 +256,7 @@ export function AdminTicketManagement() {
                   <TableHead>Category</TableHead>
                   <TableHead>Assigned To</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Transfer</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -284,6 +289,16 @@ export function AdminTicketManagement() {
                     </TableCell>
                     <TableCell>
                       {getStatusBadge(ticket.status)}
+                    </TableCell>
+                    <TableCell>
+                      {ticket.transfer_requested ? (
+                        <Badge className="bg-orange-100 text-orange-800">
+                          <AlertCircle className="h-3 w-3 mr-1" />
+                          Requested
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       {format(new Date(ticket.created_at), 'MMM dd, yyyy')}
@@ -326,7 +341,7 @@ export function AdminTicketManagement() {
           </DialogHeader>
           <div className="space-y-4">
             {selectedTicket && (
-              <div className="p-4 bg-muted rounded-lg">
+              <div className="p-4 bg-muted rounded-lg space-y-2">
                 <h4 className="font-medium">{selectedTicket.title}</h4>
                 <p className="text-sm text-muted-foreground">
                   Employee: {selectedTicket.employee?.full_name}
@@ -334,6 +349,17 @@ export function AdminTicketManagement() {
                 <p className="text-sm text-muted-foreground">
                   Category: {selectedTicket.category}
                 </p>
+                {selectedTicket.transfer_requested && selectedTicket.transfer_reason && (
+                  <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="h-4 w-4 text-orange-600 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-orange-900">Transfer Request</p>
+                        <p className="text-sm text-orange-700 mt-1">{selectedTicket.transfer_reason}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             
