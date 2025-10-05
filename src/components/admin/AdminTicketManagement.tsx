@@ -47,6 +47,7 @@ export function AdminTicketManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [transferFilter, setTransferFilter] = useState<string>('all');
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [reassignModalOpen, setReassignModalOpen] = useState(false);
   const [helpDeskUsers, setHelpDeskUsers] = useState<HelpDeskUser[]>([]);
@@ -59,7 +60,7 @@ export function AdminTicketManagement() {
 
   useEffect(() => {
     filterTickets();
-  }, [tickets, searchTerm, statusFilter, categoryFilter]);
+  }, [tickets, searchTerm, statusFilter, categoryFilter, transferFilter]);
 
   const fetchTickets = async () => {
     try {
@@ -119,6 +120,12 @@ export function AdminTicketManagement() {
 
     if (categoryFilter !== 'all') {
       filtered = filtered.filter(ticket => ticket.category === categoryFilter);
+    }
+
+    if (transferFilter === 'requested') {
+      filtered = filtered.filter(ticket => ticket.transfer_requested === true);
+    } else if (transferFilter === 'not_requested') {
+      filtered = filtered.filter(ticket => ticket.transfer_requested === false);
     }
 
     setFilteredTickets(filtered);
@@ -188,12 +195,41 @@ export function AdminTicketManagement() {
     return <div className="flex items-center justify-center p-8">Loading tickets...</div>;
   }
 
+  const transferRequestCount = tickets.filter(t => t.transfer_requested).length;
+
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground">Ticket Management</h2>
         <p className="text-muted-foreground">Manage and reassign tickets across the organization</p>
       </div>
+
+      {/* Transfer Requests Alert */}
+      {transferRequestCount > 0 && (
+        <Card className="border-orange-200 bg-orange-50">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-orange-600" />
+              <div>
+                <h3 className="font-semibold text-orange-900">
+                  {transferRequestCount} Transfer Request{transferRequestCount !== 1 ? 's' : ''} Pending
+                </h3>
+                <p className="text-sm text-orange-700">
+                  IT Helpdesk members have requested ticket reassignments. Review and action them below.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="ml-auto border-orange-300 text-orange-700 hover:bg-orange-100"
+                onClick={() => setTransferFilter('requested')}
+              >
+                View Requests
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Filters */}
       <Card>
@@ -233,6 +269,16 @@ export function AdminTicketManagement() {
                 <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={transferFilter} onValueChange={setTransferFilter}>
+              <SelectTrigger className="w-full md:w-[180px]">
+                <SelectValue placeholder="Transfer status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Tickets</SelectItem>
+                <SelectItem value="requested">Transfer Requested</SelectItem>
+                <SelectItem value="not_requested">No Transfer Request</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
@@ -263,7 +309,10 @@ export function AdminTicketManagement() {
               </TableHeader>
               <TableBody>
                 {filteredTickets.map((ticket) => (
-                  <TableRow key={ticket.id}>
+                  <TableRow 
+                    key={ticket.id}
+                    className={ticket.transfer_requested ? 'bg-orange-50/50' : ''}
+                  >
                     <TableCell className="font-mono text-sm">
                       #{ticket.id.slice(-8)}
                     </TableCell>
