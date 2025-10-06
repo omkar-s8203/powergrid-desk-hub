@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Setup from "./pages/Setup";
 import Admin from "./pages/Admin";
 import AdminUsers from "./pages/AdminUsers";
+import AdminApprovals from "./pages/AdminApprovals";
 import AdminTickets from "./pages/AdminTickets";
 import AdminReports from "./pages/AdminReports";
 import AdminDemo from "./pages/AdminDemo";
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/setup" element={<Setup />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/approvals" element={<AdminApprovals />} />
             <Route path="/admin/tickets" element={<AdminTickets />} />
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route path="/admin/demo" element={<AdminDemo />} />

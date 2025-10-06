@@ -3,14 +3,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
 export function SignupForm() {
-  const [email, setEmail] = useState('admin@powergrid.com');
-  const [password, setPassword] = useState('admin123');
-  const [fullName, setFullName] = useState('System Administrator');
+  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [role, setRole] = useState('employee');
+  const [specialization, setSpecialization] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -19,23 +21,19 @@ export function SignupForm() {
     setLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            full_name: fullName,
-            role: 'admin'
-          }
-        }
-      });
+      // Submit signup request to pending_users table
+      const { error } = await supabase
+        .from('pending_users')
+        .insert([{
+          email,
+          full_name: fullName,
+          role: role as 'employee' | 'it_helpdesk',
+          specialization: role === 'it_helpdesk' && specialization ? specialization as any : null
+        }]);
 
       if (error) {
         toast({
-          title: 'Signup Failed',
+          title: 'Request Failed',
           description: error.message,
           variant: 'destructive',
         });
@@ -43,9 +41,15 @@ export function SignupForm() {
       }
 
       toast({
-        title: 'Admin Account Created!',
-        description: 'You can now login with your credentials.',
+        title: 'Request Submitted!',
+        description: 'Your signup request has been submitted. An admin will review and approve your account shortly.',
       });
+      
+      // Clear form
+      setEmail('');
+      setFullName('');
+      setRole('employee');
+      setSpecialization('');
       
     } catch (error) {
       toast({
@@ -62,10 +66,10 @@ export function SignupForm() {
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-center">
-          Create Admin Account
+          Request System Access
         </CardTitle>
         <CardDescription className="text-center">
-          Set up the initial admin account for PowerGrid HelpDesk
+          Submit your request to join the PowerGrid IT Sahayata Desk
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -75,7 +79,7 @@ export function SignupForm() {
             <Input
               id="fullName"
               type="text"
-              placeholder="Enter full name"
+              placeholder="Enter your full name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
@@ -86,30 +90,47 @@ export function SignupForm() {
             <Input
               id="email"
               type="email"
-              placeholder="Enter admin email"
+              placeholder="your.email@powergrid.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <Label htmlFor="role">Role</Label>
+            <Select value={role} onValueChange={setRole}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="employee">Employee</SelectItem>
+                <SelectItem value="it_helpdesk">IT Helpdesk</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+          {role === 'it_helpdesk' && (
+            <div className="space-y-2">
+              <Label htmlFor="specialization">Specialization</Label>
+              <Select value={specialization} onValueChange={setSpecialization}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select specialization" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hardware">Hardware</SelectItem>
+                  <SelectItem value="software">Software</SelectItem>
+                  <SelectItem value="network">Network</SelectItem>
+                  <SelectItem value="security">Security</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <Button 
             type="submit" 
             className="w-full" 
             disabled={loading}
           >
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Create Admin Account
+            Submit Request
           </Button>
         </form>
       </CardContent>

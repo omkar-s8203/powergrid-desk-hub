@@ -30,6 +30,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'User Approvals', href: '/admin/approvals', icon: Shield },
     { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
     { name: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
     { name: 'Reports', href: '/admin/reports', icon: BarChart3 },

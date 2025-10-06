@@ -134,6 +134,59 @@ export type Database = {
         }
         Relationships: []
       }
+      pending_users: {
+        Row: {
+          email: string
+          full_name: string
+          id: string
+          rejection_reason: string | null
+          requested_at: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          specialization:
+            | Database["public"]["Enums"]["specialization_type"]
+            | null
+          status: string
+        }
+        Insert: {
+          email: string
+          full_name: string
+          id?: string
+          rejection_reason?: string | null
+          requested_at?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          specialization?:
+            | Database["public"]["Enums"]["specialization_type"]
+            | null
+          status?: string
+        }
+        Update: {
+          email?: string
+          full_name?: string
+          id?: string
+          rejection_reason?: string | null
+          requested_at?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          specialization?:
+            | Database["public"]["Enums"]["specialization_type"]
+            | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_users_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
