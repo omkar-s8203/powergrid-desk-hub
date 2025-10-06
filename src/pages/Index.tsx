@@ -86,7 +86,7 @@ const Index = () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                         
-                        <Button className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:opacity-90" size="sm" onClick={() => navigate('/auth?tab=signup')}>Get Started</Button>
+                        <Button className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:opacity-90" size="sm" onClick={() => navigate('/setup')}>Get Started</Button>
                     </div>
                     {/* 3. ADDED HAMBURGER MENU BUTTON */}
                     <div className="md:hidden">
@@ -113,7 +113,7 @@ const Index = () => {
                                     <DropdownMenuItem onClick={() => { navigate('/login/it_helpdesk'); setIsMenuOpen(false); }}>IT Helpdesk Login</DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                            <Button className="w-3/4 bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:opacity-90" onClick={() => { navigate('/auth?tab=signup'); setIsMenuOpen(false); }}>Get Started</Button>
+                            <Button className="w-3/4 bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:opacity-90" onClick={() => { navigate('/setup'); setIsMenuOpen(false); }}>Get Started</Button>
                         </nav>
                     </div>
                 )}
@@ -208,9 +208,9 @@ const Index = () => {
  
                              {/* CTA Buttons */}
                              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                                 <Button className="text-lg px-8 bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:opacity-90" size="lg" onClick={() => navigate('/auth?tab=signup')}>
-                                     Start Your Journey
-                                 </Button>
+                                  <Button className="text-lg px-8 bg-gradient-to-r from-orange-500 to-yellow-500 text-white hover:opacity-90" size="lg" onClick={() => navigate('/setup')}>
+                                      Start Your Journey
+                                  </Button>
                                  <Button variant="outline" size="lg" className="text-lg px-8 border-white text-white hover:bg-white hover:text-primary" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
                                      Learn More
                                  </Button>
