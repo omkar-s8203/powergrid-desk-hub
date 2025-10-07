@@ -122,22 +122,42 @@ export function HelpdeskTicketModal({
 
     setIsUpdating(true);
     try {
-      const { error } = await supabase
-        .from('tickets')
-        .update({ 
-          transfer_requested: true,
-          transfer_reason: transferReason 
-        })
-        .eq('id', ticket.id);
+      // Get current user profile to find the current assignee
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile) throw new Error('Profile not found');
+
+      // Call edge function to auto-reassign or mark for admin review
+      const { data, error } = await supabase.functions.invoke('auto-reassign-ticket', {
+        body: {
+          ticketId: ticket.id,
+          transferReason: transferReason,
+          currentAssigneeId: profile.id
+        }
+      });
 
       if (error) {
         throw error;
       }
 
-      toast({
-        title: 'Transfer Request Sent',
-        description: 'Admin has been notified to reassign this ticket',
-      });
+      if (data.autoAssigned) {
+        toast({
+          title: 'Ticket Reassigned',
+          description: `Ticket automatically assigned to ${data.assignedTo}`,
+        });
+      } else {
+        toast({
+          title: 'Transfer Request Sent',
+          description: 'No matching IT helpdesk available. Admin will review and reassign.',
+        });
+      }
 
       setShowTransferDialog(false);
       setTransferReason('');
@@ -147,7 +167,7 @@ export function HelpdeskTicketModal({
       console.error('Error requesting transfer:', error);
       toast({
         title: 'Error',
-        description: 'Failed to send transfer request. Please try again.',
+        description: 'Failed to process transfer request. Please try again.',
         variant: 'destructive',
       });
     } finally {

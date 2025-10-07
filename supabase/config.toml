@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.suggest-kb-articles]
 verify_jwt = false
+
+[functions.auto-reassign-ticket]
+verify_jwt = true
