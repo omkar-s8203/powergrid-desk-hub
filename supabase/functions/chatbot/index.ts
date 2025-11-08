@@ -25,29 +25,84 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
-    // Check if this is an issue submission from an employee
-    const isIssueSubmission = role === 'employee' && 
-      (message.toLowerCase().includes('issue') || 
-       message.toLowerCase().includes('problem') || 
-       message.toLowerCase().includes('help') ||
-       message.toLowerCase().includes('not working') ||
-       message.toLowerCase().includes('error') ||
-       message.toLowerCase().includes('broken'));
-
     let systemPrompt = role === 'admin' 
       ? "You are PowerGrid's IT admin assistant. Help with system administration, user management, ticket oversight, and technical decisions. Keep responses professional and focused on admin tasks."
       : role === 'it_helpdesk'
       ? "You are PowerGrid's IT helpdesk assistant. Help with technical troubleshooting, ticket resolution, and providing solutions to common IT problems. Be helpful and solution-oriented."
-      : "You are PowerGrid's employee support assistant. Help with general IT questions, guide through ticket creation, and provide basic troubleshooting steps. Be friendly and helpful.";
+      : `You are PowerGrid's employee support assistant with self-service capabilities. 
+PRIORITY: Always try to resolve issues automatically first using available tools.
+- For password resets: Use reset_password tool
+- For VPN access: Use vpn_access_guide tool  
+- For common issues: Use troubleshooting_guide tool
+Only create tickets if you cannot resolve the issue yourself. Be friendly and proactive.`;
 
-    // If it's an issue submission, enhance the system prompt for validation
-    if (isIssueSubmission) {
-      systemPrompt = `You are PowerGrid's IT issue validator and router. Analyze employee IT issues and:
-1. Determine if this is a valid IT issue that requires helpdesk assistance
-2. If valid, categorize it into: hardware, software, network, access, or other
-3. Respond ONLY with a valid JSON object, no markdown formatting or code blocks
-4. JSON format: {"isValid": boolean, "category": "hardware|software|network|access|other|null", "summary": "brief issue summary", "response": "helpful response to user"}
-5. If not valid, still be helpful but mark as not requiring ticket creation`;
+    // Define tools for self-service resolution
+    const tools = role === 'employee' ? [
+      {
+        type: "function",
+        function: {
+          name: "reset_password",
+          description: "Reset a user's password. Use this when user requests password reset or forgot password.",
+          parameters: {
+            type: "object",
+            properties: {
+              reason: { type: "string", description: "Reason for password reset" }
+            },
+            required: ["reason"]
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "vpn_access_guide",
+          description: "Provide VPN access setup and troubleshooting instructions.",
+          parameters: {
+            type: "object",
+            properties: {
+              issue_type: { 
+                type: "string", 
+                enum: ["setup", "connection_failed", "slow_speed", "credentials"],
+                description: "Type of VPN issue" 
+              }
+            },
+            required: ["issue_type"]
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "troubleshooting_guide",
+          description: "Provide step-by-step troubleshooting for common IT issues.",
+          parameters: {
+            type: "object",
+            properties: {
+              issue_category: { 
+                type: "string",
+                enum: ["email", "wifi", "printer", "software_crash", "slow_computer"],
+                description: "Category of the issue"
+              }
+            },
+            required: ["issue_category"]
+          }
+        }
+      }
+    ] : [];
+
+    const requestBody: any = {
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: message }
+      ],
+      max_tokens: 500,
+      temperature: 0.7,
+    };
+
+    if (tools.length > 0) {
+      requestBody.tools = tools;
+      requestBody.tool_choice = "auto";
     }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -56,15 +111,7 @@ serve(async (req) => {
         'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
-        ],
-        max_tokens: 500,
-        temperature: 0.7,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
@@ -72,47 +119,64 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    let botResponse = data.choices[0].message.content;
+    const choice = data.choices[0];
+    let botResponse = choice.message.content;
 
-    // Handle issue validation and ticket creation for employees
-    if (isIssueSubmission && userId) {
-      try {
-        // Clean the response - remove markdown code blocks if present
-        let cleanedResponse = botResponse.trim();
-        if (cleanedResponse.startsWith('```json')) {
-          cleanedResponse = cleanedResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-        } else if (cleanedResponse.startsWith('```')) {
-          cleanedResponse = cleanedResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
-        }
-        
-        // Try to parse JSON response for issue validation
-        const issueAnalysis = JSON.parse(cleanedResponse);
-        console.log('Parsed issue analysis:', issueAnalysis);
-        
-        if (issueAnalysis.isValid && issueAnalysis.category) {
-          // Create ticket and assign to appropriate helpdesk staff
-          const ticketResult = await createAndAssignTicket(
-            userId, 
-            issueAnalysis.summary || message, 
-            message, 
-            issueAnalysis.category
-          );
-          
-          console.log('Ticket creation result:', ticketResult);
-          
-          if (ticketResult.success) {
-            botResponse = `${issueAnalysis.response}\n\n✅ I've created a ticket for your issue (Ticket #${ticketResult.ticketId}) and assigned it to our ${issueAnalysis.category} specialist: ${ticketResult.assignedTo}. They will contact you shortly to resolve this issue.`;
-          } else {
-            botResponse = `${issueAnalysis.response}\n\n⚠️ I've validated your issue but couldn't automatically assign it right now. Please create a manual ticket through the system. Error: ${ticketResult.error}`;
+    // Handle tool calls for self-service resolution
+    if (choice.message.tool_calls && choice.message.tool_calls.length > 0) {
+      const toolCall = choice.message.tool_calls[0];
+      const functionName = toolCall.function.name;
+      const functionArgs = JSON.parse(toolCall.function.arguments);
+
+      console.log('Tool call:', functionName, functionArgs);
+
+      let toolResult = '';
+
+      switch (functionName) {
+        case 'reset_password':
+          if (userId) {
+            const resetResult = await handlePasswordReset(userId);
+            toolResult = resetResult.success 
+              ? `✅ Password reset successful! Your new temporary password is: ${resetResult.newPassword}\n\nPlease change this password after your first login for security.`
+              : `⚠️ Password reset failed: ${resetResult.error}. Creating a ticket for manual assistance.`;
+            
+            if (!resetResult.success) {
+              await createAndAssignTicket(userId, 'Password Reset Request', message, 'access');
+            }
           }
-        } else {
-          botResponse = issueAnalysis.response || botResponse;
-        }
-      } catch (parseError) {
-        // If JSON parsing fails, treat as regular response
-        console.error('Failed to parse issue analysis:', parseError);
-        console.log('Raw response:', botResponse);
+          break;
+
+        case 'vpn_access_guide':
+          toolResult = getVPNGuide(functionArgs.issue_type);
+          break;
+
+        case 'troubleshooting_guide':
+          toolResult = getTroubleshootingGuide(functionArgs.issue_category);
+          break;
       }
+
+      // Get final response with tool result
+      const followUpResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openAIApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: message },
+            { role: 'assistant', content: null, tool_calls: choice.message.tool_calls },
+            { role: 'tool', tool_call_id: toolCall.id, content: toolResult }
+          ],
+          max_tokens: 500,
+          temperature: 0.7,
+        }),
+      });
+
+      const followUpData = await followUpResponse.json();
+      botResponse = followUpData.choices[0].message.content;
     }
 
     return new Response(JSON.stringify({ response: botResponse }), {
@@ -127,6 +191,135 @@ serve(async (req) => {
     });
   }
 });
+
+async function handlePasswordReset(userId: string) {
+  try {
+    // Generate random temporary password
+    const tempPassword = generateTempPassword();
+    
+    // Call the admin-update-password function
+    const { data, error } = await supabase.functions.invoke('admin-update-password', {
+      body: { userId, newPassword: tempPassword }
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, newPassword: tempPassword };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return { success: false, error: errorMessage };
+  }
+}
+
+function generateTempPassword(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+  let password = '';
+  for (let i = 0; i < 12; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+}
+
+function getVPNGuide(issueType: string): string {
+  const guides: Record<string, string> = {
+    setup: `📡 VPN Setup Guide:
+1. Download Cisco AnyConnect from: https://powergrid.com/vpn-client
+2. Install and launch the application
+3. Enter VPN address: vpn.powergrid.com
+4. Use your company credentials (same as email login)
+5. Click Connect
+
+Need help? The connection usually takes 10-15 seconds.`,
+    
+    connection_failed: `🔧 VPN Connection Troubleshooting:
+1. Check your internet connection
+2. Verify credentials (same as email)
+3. Try disconnecting and reconnecting
+4. Restart the VPN client
+5. Check if firewall is blocking (ports 443, 10000)
+6. Try using mobile hotspot to rule out network issues
+
+Still having issues? I can create a ticket for the network team.`,
+    
+    slow_speed: `⚡ VPN Speed Optimization:
+1. Connect to nearest server location
+2. Close unnecessary applications
+3. Check your internet speed without VPN first
+4. Try different protocols in VPN settings
+5. Restart your router/modem
+
+VPN typically reduces speed by 10-20%. If it's slower, let me know.`,
+    
+    credentials: `🔑 VPN Credentials Help:
+- Username: Your company email
+- Password: Same as your email password
+- If recently changed, wait 10 minutes for sync
+- Forgot password? I can reset it for you right now!
+
+Should I reset your password?`
+  };
+
+  return guides[issueType] || 'VPN guidance provided.';
+}
+
+function getTroubleshootingGuide(category: string): string {
+  const guides: Record<string, string> = {
+    email: `📧 Email Troubleshooting:
+1. Check internet connection
+2. Verify email credentials
+3. Clear browser cache (Ctrl+Shift+Del)
+4. Try incognito/private mode
+5. Check if other devices work
+6. Restart Outlook/email client
+
+✅ Fixed? Great! Still stuck? I'll create a ticket.`,
+    
+    wifi: `📶 WiFi Troubleshooting:
+1. Turn WiFi off and on
+2. Forget network and reconnect
+3. Restart your device
+4. Check if others have WiFi
+5. Move closer to router
+6. Try different WiFi network
+
+Network name: PowerGrid-Corp
+Password: Contact IT if needed`,
+    
+    printer: `🖨️ Printer Troubleshooting:
+1. Check printer is on and has paper
+2. Check printer queue (delete stuck jobs)
+3. Restart printer
+4. Remove and re-add printer
+5. Update printer drivers
+6. Try printing test page
+
+Printer not in list? I can help add it.`,
+    
+    software_crash: `💥 Software Crash Solutions:
+1. Force close the application
+2. Restart your computer
+3. Check for software updates
+4. Run as administrator
+5. Reinstall the application
+6. Check system requirements
+
+Which software is crashing? I'll provide specific steps.`,
+    
+    slow_computer: `🐌 Slow Computer Fixes:
+1. Restart your computer
+2. Close unnecessary programs
+3. Check Task Manager (Ctrl+Shift+Esc)
+4. Clear temp files (Disk Cleanup)
+5. Check available disk space (need 10% free)
+6. Scan for malware
+
+How long has it been slow? Recent change?`
+  };
+
+  return guides[category] || 'Troubleshooting guidance provided.';
+}
 
 async function createAndAssignTicket(userId: string, title: string, description: string, category: string) {
   try {
@@ -152,7 +345,6 @@ async function createAndAssignTicket(userId: string, title: string, description:
     let assignedToName = 'Available Specialist';
 
     if (helpdeskStaff && helpdeskStaff.length > 0) {
-      // Assign to first available specialist (could be enhanced with workload balancing)
       assignedTo = helpdeskStaff[0].id;
       assignedToName = helpdeskStaff[0].full_name;
     }
