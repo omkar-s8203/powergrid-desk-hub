@@ -14,6 +14,7 @@ import AdminApprovals from "./pages/AdminApprovals";
 import AdminTickets from "./pages/AdminTickets";
 import AdminReports from "./pages/AdminReports";
 import AdminDemo from "./pages/AdminDemo";
+import AdminAIAnalytics from "./pages/AdminAIAnalytics";
 import AdminKnowledge from "./pages/AdminKnowledge";
 import Employee from "./pages/Employee";
 import CreateTicket from "./pages/CreateTicket";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/admin/tickets" element={<AdminTickets />} />
             <Route path="/admin/reports" element={<AdminReports />} />
             <Route path="/admin/demo" element={<AdminDemo />} />
+            <Route path="/admin/ai-analytics" element={<AdminAIAnalytics />} />
             <Route path="/admin/knowledge" element={<AdminKnowledge />} />
             <Route path="/employee" element={<Employee />} />
             <Route path="/employee/create" element={<CreateTicket />} />

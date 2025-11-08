@@ -140,18 +140,28 @@ Only create tickets if you cannot resolve the issue yourself. Be friendly and pr
               ? `✅ Password reset successful! Your new temporary password is: ${resetResult.newPassword}\n\nPlease change this password after your first login for security.`
               : `⚠️ Password reset failed: ${resetResult.error}. Creating a ticket for manual assistance.`;
             
-            if (!resetResult.success) {
+            if (resetResult.success) {
+              // Log successful AI resolution
+              await logChatbotResolution(userId, 'password_reset', 'password_reset', true, message);
+            } else {
               await createAndAssignTicket(userId, 'Password Reset Request', message, 'access');
+              await logChatbotResolution(userId, 'password_reset', 'ticket_created', false, message);
             }
           }
           break;
 
         case 'vpn_access_guide':
           toolResult = getVPNGuide(functionArgs.issue_type);
+          if (userId) {
+            await logChatbotResolution(userId, `vpn_${functionArgs.issue_type}`, 'vpn_guide', true, message);
+          }
           break;
 
         case 'troubleshooting_guide':
           toolResult = getTroubleshootingGuide(functionArgs.issue_category);
+          if (userId) {
+            await logChatbotResolution(userId, functionArgs.issue_category, 'troubleshooting', true, message);
+          }
           break;
       }
 
@@ -191,6 +201,26 @@ Only create tickets if you cannot resolve the issue yourself. Be friendly and pr
     });
   }
 });
+
+async function logChatbotResolution(
+  userId: string, 
+  issueType: string, 
+  resolutionMethod: string, 
+  wasResolvedByAI: boolean, 
+  message: string
+) {
+  try {
+    await supabase.from('chatbot_resolutions').insert({
+      user_id: userId,
+      issue_type: issueType,
+      resolution_method: resolutionMethod,
+      was_resolved_by_ai: wasResolvedByAI,
+      message: message
+    });
+  } catch (error) {
+    console.error('Error logging chatbot resolution:', error);
+  }
+}
 
 async function handlePasswordReset(userId: string) {
   try {

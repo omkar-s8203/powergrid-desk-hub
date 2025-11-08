@@ -34,6 +34,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
     { name: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
     { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
+    { name: 'AI Analytics', href: '/admin/ai-analytics', icon: BarChart3 },
     { name: 'AI Demo', href: '/admin/demo', icon: Shield },
   ];
 

@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      chatbot_resolutions: {
+        Row: {
+          created_at: string
+          id: string
+          issue_type: string
+          message: string
+          resolution_method: string
+          user_id: string
+          was_resolved_by_ai: boolean
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          issue_type: string
+          message: string
+          resolution_method: string
+          user_id: string
+          was_resolved_by_ai?: boolean
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          issue_type?: string
+          message?: string
+          resolution_method?: string
+          user_id?: string
+          was_resolved_by_ai?: boolean
+        }
+        Relationships: []
+      }
       kb_comments: {
         Row: {
           article_id: string
@@ -334,7 +364,7 @@ export type Database = {
     }
     Functions: {
       get_current_user_role: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
       get_ticket_messages: {
