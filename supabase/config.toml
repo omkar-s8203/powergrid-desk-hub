@@ -44,3 +44,6 @@ verify_jwt = false
 
 [functions.auto-reassign-ticket]
 verify_jwt = true
+
+[functions.seed-knowledge-base]
+verify_jwt = true

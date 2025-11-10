@@ -16,6 +16,7 @@ import AdminReports from "./pages/AdminReports";
 import AdminDemo from "./pages/AdminDemo";
 import AdminAIAnalytics from "./pages/AdminAIAnalytics";
 import AdminKnowledge from "./pages/AdminKnowledge";
+import SeedKnowledge from "./pages/SeedKnowledge";
 import Employee from "./pages/Employee";
 import CreateTicket from "./pages/CreateTicket";
 import EmployeeTickets from "./pages/EmployeeTickets";
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/admin/demo" element={<AdminDemo />} />
             <Route path="/admin/ai-analytics" element={<AdminAIAnalytics />} />
             <Route path="/admin/knowledge" element={<AdminKnowledge />} />
+            <Route path="/admin/seed-knowledge" element={<SeedKnowledge />} />
             <Route path="/employee" element={<Employee />} />
             <Route path="/employee/create" element={<CreateTicket />} />
             <Route path="/employee/tickets" element={<EmployeeTickets />} />
