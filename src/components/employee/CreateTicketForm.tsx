@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/components/auth/AuthContext';
-import { Loader2, Plus } from 'lucide-react';
+import { Loader2, Plus, Upload, X, FileIcon } from 'lucide-react';
 import { ArticleSuggestions } from '@/components/knowledge/ArticleSuggestions';
 
 const formSchema = z.object({
@@ -26,6 +26,7 @@ const formSchema = z.object({
 export function CreateTicketForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [attachments, setAttachments] = useState<File[]>([]);
   const { profile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -49,6 +50,25 @@ export function CreateTicketForm() {
       setShowSuggestions(false);
     }
   }, [watchDescription, watchCategory]);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(file => file.size <= 10 * 1024 * 1024); // 10MB max
+    
+    if (validFiles.length !== files.length) {
+      toast({
+        title: 'File too large',
+        description: 'Some files exceed 10MB and were not added',
+        variant: 'destructive',
+      });
+    }
+    
+    setAttachments(prev => [...prev, ...validFiles]);
+  };
+
+  const removeAttachment = (index: number) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!profile?.id) {
@@ -79,6 +99,35 @@ export function CreateTicketForm() {
         throw error;
       }
 
+      // Upload attachments if any
+      if (newTicket && attachments.length > 0) {
+        for (const file of attachments) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${newTicket.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+          
+          const { error: uploadError } = await supabase.storage
+            .from('ticket-attachments')
+            .upload(fileName, file);
+
+          if (uploadError) {
+            console.error('Error uploading file:', uploadError);
+            continue;
+          }
+
+          // Save attachment record
+          await supabase
+            .from('ticket_attachments')
+            .insert({
+              ticket_id: newTicket.id,
+              file_name: file.name,
+              file_path: fileName,
+              file_size: file.size,
+              file_type: file.type,
+              uploaded_by: profile.id,
+            });
+        }
+      }
+
       // Send notification webhook
       if (newTicket) {
         try {
@@ -104,6 +153,7 @@ export function CreateTicketForm() {
       });
 
       form.reset();
+      setAttachments([]);
       navigate('/employee/tickets');
     } catch (error) {
       console.error('Error creating ticket:', error);
@@ -196,6 +246,52 @@ export function CreateTicketForm() {
                     </FormItem>
                   )}
                 />
+
+                {/* File Upload */}
+                <div className="space-y-3">
+                  <FormLabel>Attachments (Optional)</FormLabel>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="file"
+                      multiple
+                      onChange={handleFileSelect}
+                      disabled={isSubmitting}
+                      accept="image/*,.pdf,.doc,.docx,.txt"
+                      className="cursor-pointer"
+                    />
+                    <Upload className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  {attachments.length > 0 && (
+                    <div className="space-y-2">
+                      {attachments.map((file, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-muted/50 rounded-md"
+                        >
+                          <div className="flex items-center gap-2">
+                            <FileIcon className="h-4 w-4" />
+                            <span className="text-sm">{file.name}</span>
+                            <span className="text-xs text-muted-foreground">
+                              ({(file.size / 1024).toFixed(1)} KB)
+                            </span>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeAttachment(index)}
+                            disabled={isSubmitting}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-xs text-muted-foreground">
+                    Max file size: 10MB. Supported formats: Images, PDF, DOC, TXT
+                  </p>
+                </div>
 
                 <div className="flex gap-4">
                   <Button 

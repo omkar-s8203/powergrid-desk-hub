@@ -11,6 +11,7 @@ import { CheckCircle, Clock, User, Calendar, Tag, FileText, Play, Save, Loader2,
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { TicketChat } from '@/components/chat/TicketChat';
+import { TicketAttachments } from '@/components/ticket/TicketAttachments';
 
 interface Ticket {
   id: string;
@@ -271,6 +272,13 @@ export function HelpdeskTicketModal({
               <div className="bg-muted/50 rounded-lg p-4">
                 <p className="text-sm whitespace-pre-wrap">{ticket.description}</p>
               </div>
+            </div>
+
+            <Separator />
+
+            {/* Attachments */}
+            <div className="space-y-3">
+              <TicketAttachments ticketId={ticket.id} />
             </div>
 
             <Separator />
