@@ -34,7 +34,9 @@ PRIORITY: Always try to resolve issues automatically first using available tools
 - For password resets: Use reset_password tool
 - For VPN access: Use vpn_access_guide tool  
 - For common issues: Use troubleshooting_guide tool
-Only create tickets if you cannot resolve the issue yourself. Be friendly and proactive.`;
+- If the user explicitly asks to create/raise a ticket, or if you cannot resolve the issue yourself, use the create_ticket tool to actually create a ticket in the system.
+IMPORTANT: When creating tickets, you MUST call the create_ticket tool. Do NOT just say you will create a ticket without calling the tool.
+Be friendly and proactive.`;
 
     // Define tools for self-service resolution
     const tools = role === 'employee' ? [
@@ -85,6 +87,26 @@ Only create tickets if you cannot resolve the issue yourself. Be friendly and pr
               }
             },
             required: ["issue_category"]
+          }
+        }
+      },
+      {
+        type: "function",
+        function: {
+          name: "create_ticket",
+          description: "Create a support ticket in the system and auto-assign it to available helpdesk staff. Use this when the user asks to create/raise a ticket, or when you cannot resolve the issue yourself.",
+          parameters: {
+            type: "object",
+            properties: {
+              title: { type: "string", description: "Short title for the ticket" },
+              description: { type: "string", description: "Detailed description of the issue" },
+              category: { 
+                type: "string",
+                enum: ["hardware", "software", "network", "access", "other"],
+                description: "Category of the issue"
+              }
+            },
+            required: ["title", "description", "category"]
           }
         }
       }
@@ -175,6 +197,26 @@ Only create tickets if you cannot resolve the issue yourself. Be friendly and pr
           toolResult = getTroubleshootingGuide(functionArgs.issue_category);
           if (userId) {
             await logChatbotResolution(userId, functionArgs.issue_category, 'troubleshooting', true, message);
+          }
+          break;
+
+        case 'create_ticket':
+          if (userId) {
+            const ticketResult = await createAndAssignTicket(
+              userId, 
+              functionArgs.title, 
+              functionArgs.description, 
+              functionArgs.category
+            );
+            if (ticketResult.success) {
+              toolResult = `✅ Ticket created successfully!\n- Ticket ID: ${ticketResult.ticketId}\n- Assigned to: ${ticketResult.assignedTo}\n- Category: ${functionArgs.category}\n- Status: ${ticketResult.assignedTo !== 'Available Specialist' ? 'In Progress' : 'Open'}`;
+              await logChatbotResolution(userId, functionArgs.category, 'ticket_created', false, message);
+            } else {
+              toolResult = `⚠️ Failed to create ticket: ${ticketResult.error}. Please try creating the ticket manually from the dashboard.`;
+            }
+            console.log('Ticket creation result:', ticketResult);
+          } else {
+            toolResult = '⚠️ Unable to create ticket: User not identified. Please log in and try again.';
           }
           break;
       }
