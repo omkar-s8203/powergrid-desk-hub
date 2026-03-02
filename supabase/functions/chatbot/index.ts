@@ -91,7 +91,7 @@ Only create tickets if you cannot resolve the issue yourself. Be friendly and pr
     ] : [];
 
     const requestBody: any = {
-      model: 'gpt-4o-mini',
+      model: 'google/gemini-3-flash-preview',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: message }
