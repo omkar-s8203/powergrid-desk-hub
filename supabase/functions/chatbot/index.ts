@@ -18,7 +18,7 @@ serve(async (req) => {
   }
 
   try {
-    const { message, role, userId } = await req.json();
+    const { message, role, userId, conversationHistory = [] } = await req.json();
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
     if (!lovableApiKey) {
