@@ -34,7 +34,9 @@ PRIORITY: Always try to resolve issues automatically first using available tools
 - For password resets: Use reset_password tool
 - For VPN access: Use vpn_access_guide tool  
 - For common issues: Use troubleshooting_guide tool
-Only create tickets if you cannot resolve the issue yourself. Be friendly and proactive.`;
+- If the user explicitly asks to create/raise a ticket, or if you cannot resolve the issue yourself, use the create_ticket tool to actually create a ticket in the system.
+IMPORTANT: When creating tickets, you MUST call the create_ticket tool. Do NOT just say you will create a ticket without calling the tool.
+Be friendly and proactive.`;
 
     // Define tools for self-service resolution
     const tools = role === 'employee' ? [
