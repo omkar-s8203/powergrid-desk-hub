@@ -19,10 +19,10 @@ serve(async (req) => {
 
   try {
     const { message, role, userId } = await req.json();
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!lovableApiKey) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
 
     let systemPrompt = role === 'admin' 
