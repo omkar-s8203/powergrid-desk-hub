@@ -199,6 +199,26 @@ Be friendly and proactive.`;
             await logChatbotResolution(userId, functionArgs.issue_category, 'troubleshooting', true, message);
           }
           break;
+
+        case 'create_ticket':
+          if (userId) {
+            const ticketResult = await createAndAssignTicket(
+              userId, 
+              functionArgs.title, 
+              functionArgs.description, 
+              functionArgs.category
+            );
+            if (ticketResult.success) {
+              toolResult = `✅ Ticket created successfully!\n- Ticket ID: ${ticketResult.ticketId}\n- Assigned to: ${ticketResult.assignedTo}\n- Category: ${functionArgs.category}\n- Status: ${ticketResult.assignedTo !== 'Available Specialist' ? 'In Progress' : 'Open'}`;
+              await logChatbotResolution(userId, functionArgs.category, 'ticket_created', false, message);
+            } else {
+              toolResult = `⚠️ Failed to create ticket: ${ticketResult.error}. Please try creating the ticket manually from the dashboard.`;
+            }
+            console.log('Ticket creation result:', ticketResult);
+          } else {
+            toolResult = '⚠️ Unable to create ticket: User not identified. Please log in and try again.';
+          }
+          break;
       }
 
       // Get final response with tool result
