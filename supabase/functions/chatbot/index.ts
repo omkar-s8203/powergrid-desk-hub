@@ -89,6 +89,26 @@ Be friendly and proactive.`;
             required: ["issue_category"]
           }
         }
+      },
+      {
+        type: "function",
+        function: {
+          name: "create_ticket",
+          description: "Create a support ticket in the system and auto-assign it to available helpdesk staff. Use this when the user asks to create/raise a ticket, or when you cannot resolve the issue yourself.",
+          parameters: {
+            type: "object",
+            properties: {
+              title: { type: "string", description: "Short title for the ticket" },
+              description: { type: "string", description: "Detailed description of the issue" },
+              category: { 
+                type: "string",
+                enum: ["hardware", "software", "network", "access", "other"],
+                description: "Category of the issue"
+              }
+            },
+            required: ["title", "description", "category"]
+          }
+        }
       }
     ] : [];
 
