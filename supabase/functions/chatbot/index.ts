@@ -90,12 +90,16 @@ Only create tickets if you cannot resolve the issue yourself. Be friendly and pr
       }
     ] : [];
 
+    // Build messages array with conversation history
+    const aiMessages = [
+      { role: 'system', content: systemPrompt },
+      ...conversationHistory.slice(-20), // Keep last 20 messages for context
+      { role: 'user', content: message }
+    ];
+
     const requestBody: any = {
       model: 'google/gemini-3-flash-preview',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: message }
-      ],
+      messages: aiMessages,
       max_tokens: 500,
       temperature: 0.7,
     };
