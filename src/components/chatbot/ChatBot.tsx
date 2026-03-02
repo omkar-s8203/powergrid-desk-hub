@@ -46,11 +46,18 @@ export function ChatBot() {
     setIsLoading(true);
 
     try {
+      // Build conversation history for context
+      const conversationHistory = messages.map(msg => ({
+        role: msg.isBot ? 'assistant' as const : 'user' as const,
+        content: msg.content,
+      }));
+
       const { data, error } = await supabase.functions.invoke('chatbot', {
         body: { 
           message: input,
           role: profile?.role || 'employee',
-          userId: profile?.user_id
+          userId: profile?.user_id,
+          conversationHistory,
         }
       });
 
