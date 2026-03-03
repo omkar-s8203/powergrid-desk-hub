@@ -21,6 +21,10 @@ interface Ticket {
   created_at: string;
   updated_at: string;
   assigned_to: string | null;
+  ai_summary?: string | null;
+  sentiment?: string | null;
+  sentiment_score?: number | null;
+  ai_analyzed_at?: string | null;
   assigned_user?: {
     full_name: string;
   };
