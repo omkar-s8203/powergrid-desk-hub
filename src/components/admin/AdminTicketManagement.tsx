@@ -307,6 +307,7 @@ export function AdminTicketManagement() {
                   <TableHead>Category</TableHead>
                   <TableHead>Assigned To</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Sentiment</TableHead>
                   <TableHead>Transfer</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead>Actions</TableHead>
