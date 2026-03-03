@@ -172,6 +172,16 @@ export function TicketDetailsModal({
 
             <Separator />
 
+            {/* AI Insights */}
+            <AIInsights
+              ticketId={ticket.id}
+              aiSummary={ticket.ai_summary}
+              sentiment={ticket.sentiment}
+              sentimentScore={ticket.sentiment_score}
+              analyzedAt={ticket.ai_analyzed_at}
+              onAnalysisComplete={onTicketUpdate}
+            />
+
             {/* Description */}
             <div className="space-y-3">
               <h3 className="font-semibold">Description</h3>
