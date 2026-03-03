@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CheckCircle, Clock, User, Calendar, Tag, FileText } from 'lucide-react';
+import { AIInsights } from '@/components/ticket/AIInsights';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { TicketChat } from '@/components/chat/TicketChat';
