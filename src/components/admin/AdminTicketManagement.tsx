@@ -363,7 +363,6 @@ export function AdminTicketManagement() {
                         <span className="text-muted-foreground text-xs">Not analyzed</span>
                       )}
                     </TableCell>
-                    </TableCell>
                     <TableCell>
                       {ticket.transfer_requested ? (
                         <Badge className="bg-orange-100 text-orange-800">
