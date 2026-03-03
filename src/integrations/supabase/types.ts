@@ -341,6 +341,8 @@ export type Database = {
       }
       tickets: {
         Row: {
+          ai_analyzed_at: string | null
+          ai_summary: string | null
           assigned_to: string | null
           category: Database["public"]["Enums"]["ticket_category"]
           created_at: string
@@ -348,6 +350,8 @@ export type Database = {
           employee_id: string
           id: string
           resolution_notes: string | null
+          sentiment: string | null
+          sentiment_score: number | null
           status: Database["public"]["Enums"]["ticket_status"]
           title: string
           transfer_reason: string | null
@@ -355,6 +359,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ai_analyzed_at?: string | null
+          ai_summary?: string | null
           assigned_to?: string | null
           category: Database["public"]["Enums"]["ticket_category"]
           created_at?: string
@@ -362,6 +368,8 @@ export type Database = {
           employee_id: string
           id?: string
           resolution_notes?: string | null
+          sentiment?: string | null
+          sentiment_score?: number | null
           status?: Database["public"]["Enums"]["ticket_status"]
           title: string
           transfer_reason?: string | null
@@ -369,6 +377,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ai_analyzed_at?: string | null
+          ai_summary?: string | null
           assigned_to?: string | null
           category?: Database["public"]["Enums"]["ticket_category"]
           created_at?: string
@@ -376,6 +386,8 @@ export type Database = {
           employee_id?: string
           id?: string
           resolution_notes?: string | null
+          sentiment?: string | null
+          sentiment_score?: number | null
           status?: Database["public"]["Enums"]["ticket_status"]
           title?: string
           transfer_reason?: string | null
