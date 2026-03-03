@@ -24,6 +24,10 @@ interface Ticket {
   assigned_to: string | null;
   transfer_requested: boolean;
   transfer_reason: string | null;
+  ai_summary?: string | null;
+  sentiment?: string | null;
+  sentiment_score?: number | null;
+  ai_analyzed_at?: string | null;
   employee?: {
     full_name: string;
     email: string;
