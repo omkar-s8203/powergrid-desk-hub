@@ -346,6 +346,25 @@ export function AdminTicketManagement() {
                       {getStatusBadge(ticket.status)}
                     </TableCell>
                     <TableCell>
+                      {ticket.sentiment ? (
+                        <Badge className={
+                          ticket.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
+                          ticket.sentiment === 'neutral' ? 'bg-blue-100 text-blue-800' :
+                          ticket.sentiment === 'frustrated' ? 'bg-orange-100 text-orange-800' :
+                          'bg-red-100 text-red-800'
+                        }>
+                          {ticket.sentiment === 'positive' && <Smile className="h-3 w-3 mr-1" />}
+                          {ticket.sentiment === 'neutral' && <Meh className="h-3 w-3 mr-1" />}
+                          {ticket.sentiment === 'frustrated' && <Frown className="h-3 w-3 mr-1" />}
+                          {ticket.sentiment === 'urgent' && <AlertTriangle className="h-3 w-3 mr-1" />}
+                          {ticket.sentiment.charAt(0).toUpperCase() + ticket.sentiment.slice(1)}
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground text-xs">Not analyzed</span>
+                      )}
+                    </TableCell>
+                    </TableCell>
+                    <TableCell>
                       {ticket.transfer_requested ? (
                         <Badge className="bg-orange-100 text-orange-800">
                           <AlertCircle className="h-3 w-3 mr-1" />
