@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Search, Eye, UserCog, Settings, AlertCircle } from 'lucide-react';
+import { Search, Eye, UserCog, Settings, AlertCircle, Brain, Smile, Meh, Frown, AlertTriangle, Loader2 } from 'lucide-react';
+import { AIInsights } from '@/components/ticket/AIInsights';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -23,6 +24,10 @@ interface Ticket {
   assigned_to: string | null;
   transfer_requested: boolean;
   transfer_reason: string | null;
+  ai_summary?: string | null;
+  sentiment?: string | null;
+  sentiment_score?: number | null;
+  ai_analyzed_at?: string | null;
   employee?: {
     full_name: string;
     email: string;
@@ -302,6 +307,7 @@ export function AdminTicketManagement() {
                   <TableHead>Category</TableHead>
                   <TableHead>Assigned To</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Sentiment</TableHead>
                   <TableHead>Transfer</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead>Actions</TableHead>
@@ -338,6 +344,24 @@ export function AdminTicketManagement() {
                     </TableCell>
                     <TableCell>
                       {getStatusBadge(ticket.status)}
+                    </TableCell>
+                    <TableCell>
+                      {ticket.sentiment ? (
+                        <Badge className={
+                          ticket.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
+                          ticket.sentiment === 'neutral' ? 'bg-blue-100 text-blue-800' :
+                          ticket.sentiment === 'frustrated' ? 'bg-orange-100 text-orange-800' :
+                          'bg-red-100 text-red-800'
+                        }>
+                          {ticket.sentiment === 'positive' && <Smile className="h-3 w-3 mr-1" />}
+                          {ticket.sentiment === 'neutral' && <Meh className="h-3 w-3 mr-1" />}
+                          {ticket.sentiment === 'frustrated' && <Frown className="h-3 w-3 mr-1" />}
+                          {ticket.sentiment === 'urgent' && <AlertTriangle className="h-3 w-3 mr-1" />}
+                          {ticket.sentiment.charAt(0).toUpperCase() + ticket.sentiment.slice(1)}
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground text-xs">Not analyzed</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       {ticket.transfer_requested ? (

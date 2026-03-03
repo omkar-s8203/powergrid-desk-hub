@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { CheckCircle, Clock, User, Calendar, Tag, FileText, Play, Save, Loader2, UserCog } from 'lucide-react';
+import { AIInsights } from '@/components/ticket/AIInsights';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { TicketChat } from '@/components/chat/TicketChat';
@@ -25,6 +26,10 @@ interface Ticket {
   resolution_notes: string | null;
   transfer_requested: boolean;
   transfer_reason: string | null;
+  ai_summary?: string | null;
+  sentiment?: string | null;
+  sentiment_score?: number | null;
+  ai_analyzed_at?: string | null;
   employee?: {
     full_name: string;
     email: string;
@@ -265,6 +270,16 @@ export function HelpdeskTicketModal({
             </div>
 
             <Separator />
+
+            {/* AI Insights */}
+            <AIInsights
+              ticketId={ticket.id}
+              aiSummary={ticket.ai_summary}
+              sentiment={ticket.sentiment}
+              sentimentScore={ticket.sentiment_score}
+              analyzedAt={ticket.ai_analyzed_at}
+              onAnalysisComplete={onTicketUpdate}
+            />
 
             {/* Description */}
             <div className="space-y-3">
