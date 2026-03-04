@@ -15,6 +15,7 @@ import AdminTickets from "./pages/AdminTickets";
 import AdminReports from "./pages/AdminReports";
 import AdminDemo from "./pages/AdminDemo";
 import AdminAIAnalytics from "./pages/AdminAIAnalytics";
+import AdminChatLogs from "./pages/AdminChatLogs";
 import AdminKnowledge from "./pages/AdminKnowledge";
 import SeedKnowledge from "./pages/SeedKnowledge";
 import Employee from "./pages/Employee";
