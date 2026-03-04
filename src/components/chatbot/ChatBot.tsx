@@ -152,13 +152,19 @@ export function ChatBot() {
                     
                     <div
                       className={cn(
-                        "max-w-[250px] rounded-lg px-3 py-2 text-sm",
+                        "max-w-[280px] rounded-lg px-3 py-2 text-sm",
                         message.isBot
                           ? "bg-muted text-foreground"
                           : "bg-primary text-primary-foreground"
                       )}
                     >
-                      {message.content}
+                      {message.isBot ? (
+                        <div className="prose prose-sm dark:prose-invert max-w-none [&>p]:m-0 [&>ul]:my-1 [&>ol]:my-1">
+                          <ReactMarkdown>{message.content}</ReactMarkdown>
+                        </div>
+                      ) : (
+                        message.content
+                      )}
                     </div>
                     
                     {!message.isBot && (
