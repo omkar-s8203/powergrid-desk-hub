@@ -7,6 +7,7 @@ import { MessageCircle, Send, X, Bot, User } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   id: string;
