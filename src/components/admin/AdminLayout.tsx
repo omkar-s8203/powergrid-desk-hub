@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   Shield,
-  BookOpen
+  BookOpen,
+  MessageSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
