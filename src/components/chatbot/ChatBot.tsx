@@ -23,6 +23,7 @@ export function ChatBot() {
   const [isLoading, setIsLoading] = useState(false);
   const { profile } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const sessionIdRef = useRef<string>(crypto.randomUUID());
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -47,7 +48,6 @@ export function ChatBot() {
     setIsLoading(true);
 
     try {
-      // Build conversation history for context
       const conversationHistory = messages.map(msg => ({
         role: msg.isBot ? 'assistant' as const : 'user' as const,
         content: msg.content,
@@ -58,6 +58,7 @@ export function ChatBot() {
           message: input,
           role: profile?.role || 'employee',
           userId: profile?.user_id,
+          sessionId: sessionIdRef.current,
           conversationHistory,
         }
       });

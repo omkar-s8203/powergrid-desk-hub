@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          role: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          role: string
+          session_id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          role?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      chat_session_analysis: {
+        Row: {
+          analyzed_at: string
+          id: string
+          message_count: number | null
+          session_id: string
+          summary: string | null
+          tone: string
+          tone_score: number | null
+          user_id: string
+        }
+        Insert: {
+          analyzed_at?: string
+          id?: string
+          message_count?: number | null
+          session_id: string
+          summary?: string | null
+          tone: string
+          tone_score?: number | null
+          user_id: string
+        }
+        Update: {
+          analyzed_at?: string
+          id?: string
+          message_count?: number | null
+          session_id?: string
+          summary?: string | null
+          tone?: string
+          tone_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       chatbot_resolutions: {
         Row: {
           created_at: string
